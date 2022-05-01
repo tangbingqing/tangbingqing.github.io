@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.1.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.jpg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.jpg">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.0.0/css/all.min.css" integrity="sha256-jTIdiMuX/e3DGJUGwl3pKSxuc6YOuqtJYkM0bGQESA4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"tangbingqing.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.10.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="一、数据集简介 原始数据有 14 个变量的 506 个观察值，其中，medv(自住房屋房价中位数，单位:千美元)是原始的目标变量，其他变量包括:crim(城镇的人均犯罪率)、mn(占地面积超过 25000 平方英尺的住宅用地的比例)、indus(每个镇的非零售业务比例，单位:英亩)、chas(有关查尔斯河的虚拟变量，如果挨着河为1，否则为0)、mo(一氧化氮浓度，单位:Ppm)、m(平均每间住房的">
+<meta property="og:type" content="article">
+<meta property="og:title" content="多元统计 - 回归">
+<meta property="og:url" content="https://tangbingqing.github.io/2022/04/24/duo-yuan-hui-gui/index.html">
+<meta property="og:site_name" content="T.ng">
+<meta property="og:description" content="一、数据集简介 原始数据有 14 个变量的 506 个观察值，其中，medv(自住房屋房价中位数，单位:千美元)是原始的目标变量，其他变量包括:crim(城镇的人均犯罪率)、mn(占地面积超过 25000 平方英尺的住宅用地的比例)、indus(每个镇的非零售业务比例，单位:英亩)、chas(有关查尔斯河的虚拟变量，如果挨着河为1，否则为0)、mo(一氧化氮浓度，单位:Ppm)、m(平均每间住房的">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://tangbingqing.github.io/2022/04/24/duo-yuan-hui-gui/image-20220424161429912.png">
+<meta property="article:published_time" content="2022-04-24T08:03:41.000Z">
+<meta property="article:modified_time" content="2022-05-01T03:13:21.835Z">
+<meta property="article:author" content="T.ng">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://tangbingqing.github.io/2022/04/24/duo-yuan-hui-gui/image-20220424161429912.png">
+
+
+<link rel="canonical" href="https://tangbingqing.github.io/2022/04/24/duo-yuan-hui-gui/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://tangbingqing.github.io/2022/04/24/duo-yuan-hui-gui/","path":"2022/04/24/duo-yuan-hui-gui/","title":"多元统计 - 回归"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>多元统计 - 回归 | T.ng</title>
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">T.ng</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-主页"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>主页</a></li><li class="menu-item menu-item-标签"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-分类"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-关于"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link"><span class="nav-number">1.</span> <span class="nav-text">一、数据集简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link"><span class="nav-number">2.</span> <span class="nav-text">二、实验</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link"><span class="nav-number">2.1.</span> <span class="nav-text">区别:</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="T.ng"
+      src="/images/head.jpg">
+  <p class="site-author-name" itemprop="name">T.ng</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">27</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/tangbingqing" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;tangbingqing" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://tangbingqing.github.io/2022/04/24/duo-yuan-hui-gui/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="T.ng">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="T.ng">
+      <meta itemprop="description" content="">
+    </span>
+    
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="多元统计 - 回归 | T.ng">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          多元统计 - 回归
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-04-24 16:03:41" itemprop="dateCreated datePublished" datetime="2022-04-24T16:03:41+08:00">2022-04-24</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2022-05-01 11:13:21" itemprop="dateModified" datetime="2022-05-01T11:13:21+08:00">2022-05-01</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%A4%9A%E5%85%83%E7%BB%9F%E8%AE%A1/" itemprop="url" rel="index"><span itemprop="name">多元统计</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h3><span id="一-数据集简介">一、数据集简介</span></h3><blockquote>
+<p>原始数据有 14 个变量的 506 个观察值，其中，medv(自住房屋房价中位数，单位:千美元)是原始的目标变量，其他变量包括:crim(城镇的人均犯罪率)、mn(占地面积超过 25000 平方英尺的住宅用地的比例)、indus(每个镇的非零售业务比例，单位:英亩)、chas(有关查尔斯河的虚拟变量，如果挨着河为1，否则为0)、mo(一氧化氮浓度，单位:Ppm)、m(平均每间住房的房间数量)、age(1940 年以前建成的自住单位的房龄比例)、dis(五个波土顿就业中心的加权距离)、rad(高速公路的可达性指数)、tax(每万美元全价物业值的财产税率)、ptratio(城镇学生与教师的比例)、b(=100078-0.63)2，其中的 B 是城镇黑人的比例)、Istat(低收入人口比例);更正过的数据集有以下附加变量:cmed(修正了的自住房价中位数，单位:千美元)、tow(镇名称)、trat(人口普查区)、lon(人口普查区的经度)、lat(人口普查区的纬度)。</p>
+</blockquote>
+<p>我们将用 <strong>comedy</strong>(修正了的自住房屋房价中位数)作为<strong>因变量</strong>， 而将 crim，zn，indus，nox，rm，age，dis，rad，tax，ptratio，b，lstat 这<strong>12</strong>个变量作为<strong>自变量</strong>。(数据下载：<a target="_blank" rel="noopener" href="https://github.com/tangbingqing/multivariate-statistics-data">https://github.com/tangbingqing/multivariate-statistics-data</a>) </p>
+<h3><span id="二-实验">二、实验</span></h3><p>1、随机地将当前数据集按照 <strong>3:1</strong> 的容量比例划分为训练集和测试集，重复此步骤十次，并将得到十次结果制作如下的折线图，其中横坐标为次数，纵坐标为对应次数的可决系数。</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">import</span> pandas <span class="token keyword">as</span> pd
+<span class="token keyword">import</span> matplotlib<span class="token punctuation">.</span>pyplot <span class="token keyword">as</span> plt
+<span class="token keyword">import</span> matplotlib
+<span class="token keyword">import</span> numpy <span class="token keyword">as</span> np
+<span class="token keyword">import</span> random
+
+<span class="token keyword">from</span> sklearn<span class="token punctuation">.</span>linear_model <span class="token keyword">import</span> LinearRegression
+<span class="token keyword">from</span> sklearn<span class="token punctuation">.</span>model_selection <span class="token keyword">import</span> train_test_split
+<span class="token keyword">from</span> sklearn<span class="token punctuation">.</span>model_selection <span class="token keyword">import</span> KFold  <span class="token comment"># 交叉验证</span>
+<span class="token keyword">from</span> sklearn<span class="token punctuation">.</span>model_selection <span class="token keyword">import</span> cross_val_score  <span class="token comment"># 模型精度</span>
+
+model <span class="token operator">=</span> LinearRegression<span class="token punctuation">(</span><span class="token punctuation">)</span>
+R <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+<span class="token keyword">for</span> i <span class="token keyword">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span><span class="token number">10</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    X_train<span class="token punctuation">,</span>X_test<span class="token punctuation">,</span>y_train<span class="token punctuation">,</span>y_test <span class="token operator">=</span> train_test_split<span class="token punctuation">(</span>X<span class="token punctuation">,</span>y<span class="token punctuation">,</span>train_size<span class="token operator">=</span><span class="token number">0.7</span><span class="token punctuation">)</span>
+    model<span class="token punctuation">.</span>fit<span class="token punctuation">(</span>X_train<span class="token punctuation">,</span>y_train<span class="token punctuation">)</span>
+    R<span class="token punctuation">.</span>append<span class="token punctuation">(</span>model<span class="token punctuation">.</span>score<span class="token punctuation">(</span>X_test<span class="token punctuation">,</span>y_test<span class="token punctuation">)</span><span class="token punctuation">)</span>
+
+x_label <span class="token operator">=</span> <span class="token builtin">range</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">11</span><span class="token punctuation">)</span>
+plt<span class="token punctuation">.</span>ylim<span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">1.2</span><span class="token punctuation">)</span>
+plt<span class="token punctuation">.</span>plot<span class="token punctuation">(</span>x_label<span class="token punctuation">,</span> R<span class="token punctuation">,</span> marker<span class="token operator">=</span><span class="token string">'o'</span><span class="token punctuation">)</span>
+plt<span class="token punctuation">.</span>show<span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<p><img src="/2022/04/24/duo-yuan-hui-gui/image-20220424161429912.png" alt="image-20220424161429912"></p>
+<p>2、<strong>最优回归方程的选择</strong>：从 12 个自变量中随机的抽取 <em>n</em>（其中n=2,…..12）个自变量，并利用十折交叉验证计算所建模型的可决系数，依据以上 12 个模型的可决系数大小确定哪一个模型的预测精度较高。（<strong>并不一定使用全部自变量的模型精度最好</strong>） </p>
+<blockquote>
+<p>sklearn.model_selection.cross_val_score (estimator, <em>X</em> , <em>y = None</em> ,  <em>score</em> <em>=</em> <em>None</em> , <em>cv</em> <em>=</em> <em>None</em>  )</p>
+<p>estimator:估计器</p>
+<p>x : 要拟合的数据</p>
+<p>y : 尝试预测的目标变量</p>
+<p>cv : 确定交叉验证拆分策略。cv 的可能输入是：<code>None</code>, 使用默认的 5 折交叉验证 ; int，指定 a 中的折叠数<code>(Stratified)KFold</code></p>
+</blockquote>
+<blockquote>
+<p>sklearn.model_selection.KFold ( <em>n_splits = 5</em> , <em>shuffle = False</em> , <em>random_state = None</em> )</p>
+</blockquote>
+<h4><span id="区别">区别:</span></h4><p>kfold : 只是将数据集划分为K-折，只是划分数据集</p>
+<p>cross_val_score ： 根据模型进行计算，计算交叉验证的结果</p>
+<p>LinearRegression().score(X, y) : score 计算这个的模型的可决系数，是模型自带的方法</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python">R <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+
+model <span class="token operator">=</span> LinearRegression<span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token keyword">for</span> i <span class="token keyword">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token number">13</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    label <span class="token operator">=</span> random<span class="token punctuation">.</span>sample<span class="token punctuation">(</span><span class="token builtin">range</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">12</span><span class="token punctuation">)</span><span class="token punctuation">,</span>i<span class="token punctuation">)</span>
+    kfolds <span class="token operator">=</span> KFold<span class="token punctuation">(</span>i<span class="token punctuation">,</span>shuffle<span class="token operator">=</span><span class="token boolean">False</span><span class="token punctuation">)</span>
+    <span class="token keyword">for</span> train<span class="token punctuation">,</span>test <span class="token keyword">in</span> kfolds<span class="token punctuation">.</span>split<span class="token punctuation">(</span>X<span class="token punctuation">,</span>y<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        model<span class="token punctuation">.</span>fit<span class="token punctuation">(</span>X<span class="token punctuation">.</span>iloc<span class="token punctuation">[</span>test<span class="token punctuation">]</span><span class="token punctuation">,</span>y<span class="token punctuation">.</span>iloc<span class="token punctuation">[</span>test<span class="token punctuation">]</span><span class="token punctuation">)</span>
+        R<span class="token punctuation">.</span>append<span class="token punctuation">(</span><span class="token punctuation">(</span>model<span class="token punctuation">.</span>score<span class="token punctuation">(</span>X<span class="token punctuation">.</span>iloc<span class="token punctuation">[</span>test<span class="token punctuation">]</span><span class="token punctuation">,</span>y<span class="token punctuation">.</span>iloc<span class="token punctuation">[</span>test<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">,</span>test<span class="token punctuation">)</span><span class="token punctuation">)</span>
+
+R<span class="token punctuation">.</span>sort<span class="token punctuation">(</span>key<span class="token operator">=</span><span class="token keyword">lambda</span> tup<span class="token punctuation">:</span> tup<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<pre class="line-numbers language-python" data-language="python"><code class="language-python">R <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+model <span class="token operator">=</span> LinearRegression<span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token keyword">for</span> i <span class="token keyword">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token number">13</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    label <span class="token operator">=</span> random<span class="token punctuation">.</span>sample<span class="token punctuation">(</span><span class="token builtin">range</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">12</span><span class="token punctuation">)</span><span class="token punctuation">,</span>i<span class="token punctuation">)</span>
+    kfolds <span class="token operator">=</span> KFold<span class="token punctuation">(</span>i<span class="token punctuation">,</span>shuffle<span class="token operator">=</span><span class="token boolean">False</span><span class="token punctuation">)</span>
+    xx <span class="token operator">=</span> X<span class="token punctuation">.</span>iloc<span class="token punctuation">[</span><span class="token punctuation">:</span><span class="token punctuation">,</span>label<span class="token punctuation">]</span>
+    score <span class="token operator">=</span> cross_val_score<span class="token punctuation">(</span>model<span class="token punctuation">,</span>xx<span class="token punctuation">,</span>y<span class="token punctuation">,</span>cv <span class="token operator">=</span>kfolds<span class="token punctuation">)</span>  
+    R<span class="token punctuation">.</span>append<span class="token punctuation">(</span>score<span class="token punctuation">.</span>mean<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<p>3、岭回归、Lasso 回归模型中关键正则参数𝛌的选择：在给定参数𝛌 的 0.01，0.1，0.2, 0.5, 1 这五个可能性取值的条件下，利用十折交叉验证和可决系数确定两个模型的各自最优参数?</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python">lamda <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token number">0.01</span><span class="token punctuation">,</span><span class="token number">0.1</span><span class="token punctuation">,</span><span class="token number">0.2</span><span class="token punctuation">,</span><span class="token number">0.5</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">]</span>
+<span class="token comment"># 岭回归</span>
+<span class="token keyword">from</span> sklearn<span class="token punctuation">.</span>linear_model <span class="token keyword">import</span> Ridge<span class="token punctuation">,</span>RidgeCV
+kfolds <span class="token operator">=</span> KFold<span class="token punctuation">(</span><span class="token number">10</span><span class="token punctuation">,</span>shuffle<span class="token operator">=</span><span class="token boolean">False</span><span class="token punctuation">)</span>
+
+R1 <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+<span class="token keyword">for</span> l <span class="token keyword">in</span> lamda<span class="token punctuation">:</span>
+    model <span class="token operator">=</span> Ridge<span class="token punctuation">(</span>alpha<span class="token operator">=</span>l<span class="token punctuation">,</span>fit_intercept<span class="token operator">=</span><span class="token boolean">True</span><span class="token punctuation">)</span>
+    score <span class="token operator">=</span> cross_val_score<span class="token punctuation">(</span>model<span class="token punctuation">,</span>X<span class="token punctuation">,</span>y<span class="token punctuation">,</span>cv<span class="token operator">=</span>kfolds<span class="token punctuation">)</span>
+    R1<span class="token punctuation">.</span>append<span class="token punctuation">(</span>score<span class="token punctuation">.</span>mean<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+
+<span class="token comment"># l = 1 时，最好</span>
+
+
+<span class="token comment"># Lasso回归</span>
+<span class="token keyword">from</span> sklearn<span class="token punctuation">.</span>linear_model <span class="token keyword">import</span> Lasso
+R2 <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+<span class="token keyword">for</span> l <span class="token keyword">in</span> lamda<span class="token punctuation">:</span>
+    model <span class="token operator">=</span> Lasso<span class="token punctuation">(</span>alpha<span class="token operator">=</span>l<span class="token punctuation">,</span>fit_intercept<span class="token operator">=</span><span class="token boolean">True</span><span class="token punctuation">)</span>
+    score <span class="token operator">=</span> cross_val_score<span class="token punctuation">(</span>model<span class="token punctuation">,</span>X<span class="token punctuation">,</span>y<span class="token punctuation">,</span>cv<span class="token operator">=</span>kfolds<span class="token punctuation">)</span>
+    R2<span class="token punctuation">.</span>append<span class="token punctuation">(</span>score<span class="token punctuation">.</span>mean<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+
+<span class="token comment"># l = 0.2 时，最好</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/04/22/hua-tu/" rel="prev" title="多元统计 - 画图">
+                  <i class="fa fa-chevron-left"></i> 多元统计 - 画图
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2022/04/29/duo-yuan-fen-lei/" rel="next" title="多元统计 - 分类">
+                  多元统计 - 分类 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">T.ng</span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+</body>
+</html>

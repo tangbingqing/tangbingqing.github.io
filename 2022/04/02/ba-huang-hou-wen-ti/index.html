@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.1.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.jpg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.jpg">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.0.0/css/all.min.css" integrity="sha256-jTIdiMuX/e3DGJUGwl3pKSxuc6YOuqtJYkM0bGQESA4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"tangbingqing.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.10.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="通过对它攻击位置的研究，可以发现，它攻击了上、下、左、右、左上、左下、右上、右下八个方向；int x[8]&#x3D;{0,0,-1,1,-1,-1,1,1};int y[8]&#x3D;{1,-1,0,0,1,-1,1,-1}; 我们要考虑几个问题：第一、皇后放置后，可以攻击到那些地方（数组标记是否被攻击）第二、除去攻击的地方和已经放置的地方，还剩下哪些地方可以放置（数组存储放置位置，即答案）第三、怎样回溯，因为一">
+<meta property="og:type" content="article">
+<meta property="og:title" content="八皇后问题">
+<meta property="og:url" content="https://tangbingqing.github.io/2022/04/02/ba-huang-hou-wen-ti/index.html">
+<meta property="og:site_name" content="T.ng">
+<meta property="og:description" content="通过对它攻击位置的研究，可以发现，它攻击了上、下、左、右、左上、左下、右上、右下八个方向；int x[8]&#x3D;{0,0,-1,1,-1,-1,1,1};int y[8]&#x3D;{1,-1,0,0,1,-1,1,-1}; 我们要考虑几个问题：第一、皇后放置后，可以攻击到那些地方（数组标记是否被攻击）第二、除去攻击的地方和已经放置的地方，还剩下哪些地方可以放置（数组存储放置位置，即答案）第三、怎样回溯，因为一">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-04-02T08:24:41.000Z">
+<meta property="article:modified_time" content="2022-04-04T14:10:36.057Z">
+<meta property="article:author" content="T.ng">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://tangbingqing.github.io/2022/04/02/ba-huang-hou-wen-ti/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://tangbingqing.github.io/2022/04/02/ba-huang-hou-wen-ti/","path":"2022/04/02/ba-huang-hou-wen-ti/","title":"八皇后问题"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>八皇后问题 | T.ng</title>
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">T.ng</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-主页"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>主页</a></li><li class="menu-item menu-item-标签"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-分类"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-关于"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link"><span class="nav-number">1.</span> <span class="nav-text">一、vector</span></a></li><li class="nav-item nav-level-4"><a class="nav-link"><span class="nav-number">2.</span> <span class="nav-text">二、一维数组</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="T.ng"
+      src="/images/head.jpg">
+  <p class="site-author-name" itemprop="name">T.ng</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">27</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/tangbingqing" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;tangbingqing" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://tangbingqing.github.io/2022/04/02/ba-huang-hou-wen-ti/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="T.ng">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="T.ng">
+      <meta itemprop="description" content="">
+    </span>
+    
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="八皇后问题 | T.ng">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          八皇后问题
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-04-02 16:24:41" itemprop="dateCreated datePublished" datetime="2022-04-02T16:24:41+08:00">2022-04-02</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2022-04-04 22:10:36" itemprop="dateModified" datetime="2022-04-04T22:10:36+08:00">2022-04-04</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E7%AE%97%E6%B3%95-%E9%80%92%E5%BD%92/" itemprop="url" rel="index"><span itemprop="name">算法-递归</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>通过对它攻击位置的研究，可以发现，它攻击了上、下、左、右、左上、左下、右上、右下八个方向；<br>int x[8]={0,0,-1,1,-1,-1,1,1};<br>int y[8]={1,-1,0,0,1,-1,1,-1};</p>
+<p>我们要考虑几个问题：<br>第一、皇后放置后，可以攻击到那些地方（数组标记是否被攻击）<br>第二、除去攻击的地方和已经放置的地方，还剩下哪些地方可以放置（数组存储放置位置，即答案）<br>第三、怎样回溯，因为一定是一行一行的放置，当遇到某一行没有地方的时候，就一定是之前的某一个棋子放错了位置，就返回到之前，需要用一个数组来保存，上一步骤产生的答案</p>
+<h4><span id="一-vector">一、vector</span></h4><pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;cstring&gt;
+#include &lt;vector&gt;
+using namespace std;
+
+// 更新数组
+void put_queen(int x,int y,vector&lt;vector&lt;int&gt;&gt;&amp;attack){
+    static const int dx[] = {-1,1,0,0,-1,-1,1,1};
+    static const int dy[] = {0,0,-1,1,-1,1,-1,1};
+    attack[x][y] = 1;
+
+    //数组标记
+    for(int i=1;i&lt;attack.size();i++){
+        for(int j=0;j&lt;8;j++){
+            int nx = x + i*dx[j];
+            int ny = y + i*dy[j];
+
+            if(nx&gt;=0&amp;&amp;nx&lt;attack.size()&amp;&amp;ny&gt;=0&amp;&amp;ny&lt;attack.size()){
+                attack[nx][ny]=1;
+            }
+        }
+    }
+}
+
+// 回溯函数
+void backtrack(int k,int n,   //k表示处理的行
+               vector&lt;string&gt;&amp;queen,   //存放皇后位置
+               vector&lt;vector&lt;int&gt;&gt;&amp;attack,    //攻击数组
+               vector&lt;vector&lt;string&gt;&gt;&amp;solve){      //存储全部解法
+
+    if(k==n){
+        solve.push_back(queen);
+        return ;
+    }
+
+    for(int i=0;i&lt;n;i++){
+        if(attack[k][i]==0){
+            vector&lt;vector&lt;int&gt;&gt;tmp = attack;  //备份攻击数组
+            queen[k][i] = 'q';
+            put_queen(k,i,attack);
+            backtrack(k+1,n,queen,attack,solve);
+            attack = tmp;   //恢复攻击数组
+            queen[k][i] = '.';  //恢复皇后数组
+        }
+    }
+}
+// 答案
+vector&lt;vector&lt;string&gt;&gt;solveNQueens(int n){
+    vector&lt;vector&lt;string&gt;&gt;solve;
+    vector&lt;vector&lt;int&gt;&gt;attack;
+    vector&lt;string&gt;queen;
+
+    //初始化
+    for(int i=0;i&lt;n;i++){
+        attack.push_back((std::vector&lt;int&gt;()));
+        for(int j=0;j&lt;n;j++){
+            attack[i].push_back(0);
+        }
+        queen.push_back("");
+        queen[i].append(n,'.');
+    }
+    backtrack(0,n,queen,attack,solve);
+    return solve;
+}
+
+int main()
+{
+    vector&lt;vector&lt;string&gt;&gt;result;
+    result = solveNQueens(8);
+    for(int i=0;i&lt;result.size();i++){
+        cout&lt;&lt;"解法"&lt;&lt;i&lt;&lt;endl;
+        for(int j=0;j&lt;result[i].size();j++){
+            cout&lt;&lt;result[i][j].c_str()&lt;&lt;endl;
+        }
+        cout&lt;&lt;endl;
+    }
+    return 0;
+}
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<h4><span id="二-一维数组">二、一维数组</span></h4><pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;algorithm&gt;
+#include &lt;cmath&gt;
+#include &lt;cstring&gt;
+#include &lt;iomanip&gt;
+#include &lt;string&gt;
+
+using namespace std;
+
+//左上角为（0，0）
+int xx[8]={0,0,-1,1,-1,-1,1,1};
+int yy[8]={1,-1,0,0,1,-1,1,-1};
+int a=0,n=8;
+int attack[20][20];//标记皇后的攻击位置
+char queen[20][20];//储存皇后的放置的位置
+int solve[99];
+
+void copy(int a[20][20],int b[20][20],int n)
+{
+    for(int i=0;i&lt;n;i++)
+    {
+        for(int j=0;j&lt;n;j++)
+        {
+            b[i][j]=a[i][j];
+        }
+    }
+}
+void put(int x,int y,int n)
+{
+    attack[x][y]=1;
+    for(int i=1;i&lt;n;i++)//从皇后位置向1——n-1个距离
+    {
+         for(int j=0;j&lt;8;j++)//八个方向
+         {
+             int r=x+i*xx[j];
+             int l=y+i*yy[j];
+             if(r&gt;=0&amp;&amp;r&lt;n&amp;&amp;l&gt;=0&amp;&amp;l&lt;n) attack[r][l]=1;
+         }
+    }
+}
+void backtracking(int n,int k)
+{
+     if(k==n)//终止条件
+     {
+         a++;
+         for(int i=0;i&lt;n;i++)
+         {
+             for(int j=0;j&lt;n;j++)
+             {
+                 if(queen[i][j]=='Q') solve[a]=solve[a]*10+j+1;
+             }
+         }
+         return ;
+     }
+     for(int i=0;i&lt;n;i++)//循环列
+     {
+         if(attack[k][i]==0)
+         {
+             int temp[20][20];
+             copy(attack,temp,n);
+             put(k,i,n);//更新攻击位置
+             queen[k][i]='Q';
+             backtracking(n,k+1);
+             copy(temp,attack,n);//恢复
+             queen[k][i]='.';//恢复
+         }
+     }
+}
+
+int main()
+{
+    for(int i=0;i&lt;n;i++)
+    {
+        for(int j=0;j&lt;n;j++)
+        {
+            attack[i][j]=0;
+            queen[i][j]='.';
+        }
+    }
+    backtracking(n,0);
+    for(int i=0;i&lt;91;i++)
+    {
+        cout&lt;&lt;solve[i]&lt;&lt;endl;
+    }
+	return 0;
+}
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/04/02/kmp/" rel="prev" title="KMP">
+                  <i class="fa fa-chevron-left"></i> KMP
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2022/04/06/luo-ji-hui-gui/" rel="next" title="逻辑回归">
+                  逻辑回归 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">T.ng</span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+</body>
+</html>

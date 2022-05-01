@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.1.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.jpg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.jpg">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.0.0/css/all.min.css" integrity="sha256-jTIdiMuX/e3DGJUGwl3pKSxuc6YOuqtJYkM0bGQESA4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"tangbingqing.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.10.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="数据下载：https:&#x2F;&#x2F;github.com&#x2F;tangbingqing&#x2F;multivariate-statistics-data 轮廓图和调和曲线图有着相近的功能，轮廓图简单却现得粗糙，调和曲线图公式复杂却十分精细。 均可用于聚类分析：同类曲线聚在一起，不同类不同束 一、轮廓图在二维直角坐标系中，将n次观测值可画出n条折线构成轮廓图，其中横坐标表示各个变量，纵坐标表示与变量取值成正比的数值 da">
+<meta property="og:type" content="article">
+<meta property="og:title" content="多元统计 - 画图">
+<meta property="og:url" content="https://tangbingqing.github.io/2022/04/22/hua-tu/index.html">
+<meta property="og:site_name" content="T.ng">
+<meta property="og:description" content="数据下载：https:&#x2F;&#x2F;github.com&#x2F;tangbingqing&#x2F;multivariate-statistics-data 轮廓图和调和曲线图有着相近的功能，轮廓图简单却现得粗糙，调和曲线图公式复杂却十分精细。 均可用于聚类分析：同类曲线聚在一起，不同类不同束 一、轮廓图在二维直角坐标系中，将n次观测值可画出n条折线构成轮廓图，其中横坐标表示各个变量，纵坐标表示与变量取值成正比的数值 da">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://tangbingqing.github.io/2022/04/22/hua-tu/image-20220422184138691.png">
+<meta property="og:image" content="https://tangbingqing.github.io/2022/04/22/hua-tu/image-20220422184428930.png">
+<meta property="og:image" content="https://tangbingqing.github.io/2022/04/22/hua-tu/image-20220422185927468.png">
+<meta property="og:image" content="https://tangbingqing.github.io/2022/04/22/hua-tu/image-20220422200043112.png">
+<meta property="og:image" content="https://tangbingqing.github.io/2022/04/22/hua-tu/image-20220422202553681.png">
+<meta property="og:image" content="https://tangbingqing.github.io/2022/04/22/hua-tu/image-20220422204459795.png">
+<meta property="article:published_time" content="2022-04-22T14:53:41.000Z">
+<meta property="article:modified_time" content="2022-04-22T14:53:55.582Z">
+<meta property="article:author" content="T.ng">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://tangbingqing.github.io/2022/04/22/hua-tu/image-20220422184138691.png">
+
+
+<link rel="canonical" href="https://tangbingqing.github.io/2022/04/22/hua-tu/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://tangbingqing.github.io/2022/04/22/hua-tu/","path":"2022/04/22/hua-tu/","title":"多元统计 - 画图"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>多元统计 - 画图 | T.ng</title>
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">T.ng</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-主页"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>主页</a></li><li class="menu-item menu-item-标签"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-分类"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-关于"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link"><span class="nav-number">1.</span> <span class="nav-text">一、轮廓图</span></a></li><li class="nav-item nav-level-2"><a class="nav-link"><span class="nav-number">2.</span> <span class="nav-text">二、调和曲线图</span></a></li><li class="nav-item nav-level-2"><a class="nav-link"><span class="nav-number">3.</span> <span class="nav-text">三、雷达图</span></a></li><li class="nav-item nav-level-2"><a class="nav-link"><span class="nav-number">4.</span> <span class="nav-text">四、散布矩阵图</span></a></li><li class="nav-item nav-level-2"><a class="nav-link"><span class="nav-number">5.</span> <span class="nav-text">实验</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="T.ng"
+      src="/images/head.jpg">
+  <p class="site-author-name" itemprop="name">T.ng</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">27</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/tangbingqing" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;tangbingqing" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://tangbingqing.github.io/2022/04/22/hua-tu/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="T.ng">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="T.ng">
+      <meta itemprop="description" content="">
+    </span>
+    
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="多元统计 - 画图 | T.ng">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          多元统计 - 画图
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2022-04-22 22:53:41 / 修改时间：22:53:55" itemprop="dateCreated datePublished" datetime="2022-04-22T22:53:41+08:00">2022-04-22</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%A4%9A%E5%85%83%E7%BB%9F%E8%AE%A1/" itemprop="url" rel="index"><span itemprop="name">多元统计</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>数据下载：<a target="_blank" rel="noopener" href="https://github.com/tangbingqing/multivariate-statistics-data">https://github.com/tangbingqing/multivariate-statistics-data</a></p>
+<p>轮廓图和调和曲线图有着相近的功能，轮廓图简单却现得粗糙，调和曲线图公式复杂却十分精细。</p>
+<p>均可用于聚类分析：同类曲线聚在一起，不同类不同束</p>
+<h2><span id="一-轮廓图">一、轮廓图</span></h2><p>在二维直角坐标系中，将n次观测值可画出n条折线构成轮廓图，其中横坐标表示各个变量<strong>，</strong>纵坐标表示<strong>与变量取值成正比的数值</strong></p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python">data <span class="token operator">=</span> pd<span class="token punctuation">.</span>read_csv<span class="token punctuation">(</span><span class="token string">r"iris.data"</span><span class="token punctuation">)</span>   <span class="token comment"># 尾鸢花数据</span>
+plt<span class="token punctuation">.</span>figure<span class="token punctuation">(</span><span class="token punctuation">)</span>
+pd<span class="token punctuation">.</span>plotting<span class="token punctuation">.</span>parallel_coordinates<span class="token punctuation">(</span>data<span class="token punctuation">,</span><span class="token string">'species'</span><span class="token punctuation">)</span>
+plt<span class="token punctuation">.</span>show<span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p><img src="/2022/04/22/hua-tu/image-20220422184138691.png" alt="image-20220422184138691"></p>
+<h2><span id="二-调和曲线图">二、调和曲线图</span></h2><pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">from</span> pandas<span class="token punctuation">.</span>plotting <span class="token keyword">import</span> andrews_curves
+
+data <span class="token operator">=</span> pd<span class="token punctuation">.</span>read_csv<span class="token punctuation">(</span><span class="token string">r"iris.data"</span><span class="token punctuation">)</span>
+plt<span class="token punctuation">.</span>figure<span class="token punctuation">(</span><span class="token punctuation">)</span>
+andrews_curves<span class="token punctuation">(</span>data<span class="token punctuation">,</span><span class="token string">'species'</span><span class="token punctuation">)</span>
+plt<span class="token punctuation">.</span>show<span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<p><img src="/2022/04/22/hua-tu/image-20220422184428930.png" alt="image-20220422184428930"></p>
+<h2><span id="三-雷达图">三、雷达图</span></h2><pre class="line-numbers language-python" data-language="python"><code class="language-python">matplotlib<span class="token punctuation">.</span>rcParams<span class="token punctuation">[</span><span class="token string">'font.family'</span><span class="token punctuation">]</span><span class="token operator">=</span><span class="token string">'SimHei'</span>
+matplotlib<span class="token punctuation">.</span>rcParams<span class="token punctuation">[</span><span class="token string">'font.sans-serif'</span><span class="token punctuation">]</span><span class="token operator">=</span><span class="token punctuation">[</span><span class="token string">'SimHei'</span><span class="token punctuation">]</span>
+labels <span class="token operator">=</span> np<span class="token punctuation">.</span>array<span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token string">'综合'</span><span class="token punctuation">,</span><span class="token string">'第一周'</span><span class="token punctuation">,</span><span class="token string">'第二周'</span><span class="token punctuation">,</span><span class="token string">'第三周'</span><span class="token punctuation">,</span><span class="token string">'第四周'</span><span class="token punctuation">,</span><span class="token string">'第五周'</span><span class="token punctuation">,</span><span class="token string">'第六周'</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+score <span class="token operator">=</span> np<span class="token punctuation">.</span>array<span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token number">88.7</span><span class="token punctuation">,</span><span class="token number">85</span><span class="token punctuation">,</span><span class="token number">90</span><span class="token punctuation">,</span><span class="token number">95</span><span class="token punctuation">,</span><span class="token number">70</span><span class="token punctuation">,</span><span class="token number">96</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+
+nAttr <span class="token operator">=</span> <span class="token number">6</span>  <span class="token comment"># 共6组</span>
+angles<span class="token operator">=</span>np<span class="token punctuation">.</span>linspace<span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token operator">*</span>np<span class="token punctuation">.</span>pi<span class="token punctuation">,</span>nAttr<span class="token punctuation">,</span>endpoint<span class="token operator">=</span><span class="token boolean">False</span><span class="token punctuation">)</span>
+
+Python<span class="token operator">=</span>np<span class="token punctuation">.</span>concatenate<span class="token punctuation">(</span><span class="token punctuation">(</span>score<span class="token punctuation">,</span><span class="token punctuation">[</span>score<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span>  <span class="token comment"># 闭合</span>
+angles<span class="token operator">=</span>np<span class="token punctuation">.</span>concatenate<span class="token punctuation">(</span><span class="token punctuation">(</span>angles<span class="token punctuation">,</span><span class="token punctuation">[</span>angles<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span>  <span class="token comment">#闭合</span>
+
+fig<span class="token operator">=</span>plt<span class="token punctuation">.</span>figure<span class="token punctuation">(</span>facecolor<span class="token operator">=</span><span class="token string">"white"</span><span class="token punctuation">)</span>   <span class="token comment"># 背景颜色，白色</span>
+
+plt<span class="token punctuation">.</span>subplot<span class="token punctuation">(</span><span class="token number">111</span><span class="token punctuation">,</span>polar<span class="token operator">=</span><span class="token boolean">True</span><span class="token punctuation">)</span>
+plt<span class="token punctuation">.</span>plot<span class="token punctuation">(</span>angles<span class="token punctuation">,</span>Python<span class="token punctuation">,</span><span class="token string">'bo-'</span><span class="token punctuation">,</span>color<span class="token operator">=</span><span class="token string">'g'</span><span class="token punctuation">,</span>linewidth<span class="token operator">=</span><span class="token number">2</span><span class="token punctuation">)</span>  <span class="token comment"># 绿色边框</span>
+plt<span class="token punctuation">.</span>fill<span class="token punctuation">(</span>angles<span class="token punctuation">,</span>Python<span class="token punctuation">,</span>facecolor<span class="token operator">=</span><span class="token string">'g'</span><span class="token punctuation">,</span>alpha<span class="token operator">=</span><span class="token number">0.2</span><span class="token punctuation">)</span>  <span class="token comment">#绿色背景填充</span>
+plt<span class="token punctuation">.</span>thetagrids<span class="token punctuation">(</span>angles<span class="token operator">*</span><span class="token number">180</span><span class="token operator">/</span>np<span class="token punctuation">.</span>pi<span class="token punctuation">,</span>labels<span class="token punctuation">)</span>  <span class="token comment"># 标签</span>
+plt<span class="token punctuation">.</span>show<span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+
+
+<p><img src="/2022/04/22/hua-tu/image-20220422185927468.png" alt="image-20220422185927468"></p>
+<h2><span id="四-散布矩阵图">四、散布矩阵图</span></h2><p>展示每两个变量之间的相关情况</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">from</span> pandas<span class="token punctuation">.</span>plotting <span class="token keyword">import</span> scatter_matrix
+
+pd_data<span class="token operator">=</span>pd<span class="token punctuation">.</span>read_csv<span class="token punctuation">(</span><span class="token string">"iris.data"</span><span class="token punctuation">)</span>
+plt<span class="token punctuation">.</span>figure<span class="token punctuation">(</span><span class="token punctuation">)</span>
+scatter_matrix<span class="token punctuation">(</span>pd_data<span class="token punctuation">,</span>figsize<span class="token operator">=</span><span class="token punctuation">(</span><span class="token number">10</span><span class="token punctuation">,</span><span class="token number">10</span><span class="token punctuation">)</span><span class="token punctuation">)</span> 
+plt<span class="token punctuation">.</span>show<span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<p><img src="/2022/04/22/hua-tu/image-20220422200043112.png" alt="image-20220422200043112"></p>
+<h2><span id="实验">实验</span></h2><pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token comment"># (1)分别绘制 OXY 与 time 和 age 的散布图</span>
+<span class="token keyword">from</span> pandas<span class="token punctuation">.</span>plotting <span class="token keyword">import</span> scatter_matrix
+
+data <span class="token operator">=</span> pd<span class="token punctuation">.</span>read_table<span class="token punctuation">(</span><span class="token string">'peo.txt'</span><span class="token punctuation">,</span> sep<span class="token operator">=</span><span class="token string">'\s+'</span><span class="token punctuation">)</span>
+da_ti_ag <span class="token operator">=</span> data<span class="token punctuation">.</span>loc<span class="token punctuation">[</span><span class="token punctuation">:</span><span class="token punctuation">,</span><span class="token punctuation">[</span><span class="token string">"time"</span><span class="token punctuation">,</span><span class="token string">"age"</span><span class="token punctuation">,</span><span class="token string">"OXY"</span><span class="token punctuation">]</span><span class="token punctuation">]</span>
+plt<span class="token punctuation">.</span>figure<span class="token punctuation">(</span><span class="token punctuation">)</span>
+scatter_matrix<span class="token punctuation">(</span>da_ti_ag<span class="token punctuation">,</span>figsize<span class="token operator">=</span><span class="token punctuation">(</span><span class="token number">10</span><span class="token punctuation">,</span><span class="token number">10</span><span class="token punctuation">)</span><span class="token punctuation">)</span> 
+plt<span class="token punctuation">.</span>show<span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+<span class="token comment"># (2) 1,2,21,22 的 4 个人的调和曲线图(放在同一张图上)</span>
+
+<span class="token keyword">from</span> pandas<span class="token punctuation">.</span>plotting <span class="token keyword">import</span> andrews_curves
+
+matplotlib<span class="token punctuation">.</span>rcParams<span class="token punctuation">[</span><span class="token string">'axes.unicode_minus'</span><span class="token punctuation">]</span> <span class="token operator">=</span><span class="token boolean">False</span>  <span class="token comment"># 显示负号</span>
+data <span class="token operator">=</span> pd<span class="token punctuation">.</span>read_table<span class="token punctuation">(</span><span class="token string">'peo.txt'</span><span class="token punctuation">,</span> sep<span class="token operator">=</span><span class="token string">'\s+'</span><span class="token punctuation">)</span>
+data <span class="token operator">=</span> data<span class="token punctuation">.</span>iloc<span class="token punctuation">[</span><span class="token punctuation">:</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">:</span><span class="token punctuation">]</span>
+da_ti_ag <span class="token operator">=</span> data<span class="token punctuation">.</span>iloc<span class="token punctuation">[</span><span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token number">21</span><span class="token punctuation">,</span><span class="token number">22</span><span class="token punctuation">]</span><span class="token punctuation">,</span><span class="token punctuation">:</span><span class="token punctuation">]</span>
+plt<span class="token punctuation">.</span>figure<span class="token punctuation">(</span><span class="token punctuation">)</span>
+andrews_curves<span class="token punctuation">(</span>da_ti_ag<span class="token punctuation">,</span><span class="token string">"OXY"</span><span class="token punctuation">)</span>
+plt<span class="token punctuation">.</span>show<span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+
+
+<p><img src="/2022/04/22/hua-tu/image-20220422202553681.png" alt="image-20220422202553681"></p>
+<p><img src="/2022/04/22/hua-tu/image-20220422204459795.png" alt="image-20220422204459795"></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/04/16/er-cha-shu/" rel="prev" title="二叉树">
+                  <i class="fa fa-chevron-left"></i> 二叉树
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2022/04/24/duo-yuan-hui-gui/" rel="next" title="多元统计 - 回归">
+                  多元统计 - 回归 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">T.ng</span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.1.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.jpg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.jpg">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.0.0/css/all.min.css" integrity="sha256-jTIdiMuX/e3DGJUGwl3pKSxuc6YOuqtJYkM0bGQESA4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"tangbingqing.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.10.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="因子分析factor_analyzer.FactorAnalyzer(n_factors&#x3D;3 , rotation&#x3D;&#39;promax&#39; , method&#x3D;&#39;minres&#39; )  # n_factors : 要选择的因素的数量。默认为 3  # rotation : 旋转 varimax（正交旋转） promax（倾斜旋转） oblimin（倾斜旋转） oblimax（正交旋转） quartimin（">
+<meta property="og:type" content="article">
+<meta property="og:title" content="多元-因子分析">
+<meta property="og:url" content="https://tangbingqing.github.io/2022/05/01/duo-yuan-yin-zi-fen-xi/index.html">
+<meta property="og:site_name" content="T.ng">
+<meta property="og:description" content="因子分析factor_analyzer.FactorAnalyzer(n_factors&#x3D;3 , rotation&#x3D;&#39;promax&#39; , method&#x3D;&#39;minres&#39; )  # n_factors : 要选择的因素的数量。默认为 3  # rotation : 旋转 varimax（正交旋转） promax（倾斜旋转） oblimin（倾斜旋转） oblimax（正交旋转） quartimin（">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://tangbingqing.github.io/2022/05/01/duo-yuan-yin-zi-fen-xi/image-20220501102944518.png">
+<meta property="og:image" content="https://tangbingqing.github.io/2022/05/01/duo-yuan-yin-zi-fen-xi/image-20220501102928221.png">
+<meta property="article:published_time" content="2022-05-01T03:12:41.000Z">
+<meta property="article:modified_time" content="2022-05-01T13:56:31.409Z">
+<meta property="article:author" content="T.ng">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://tangbingqing.github.io/2022/05/01/duo-yuan-yin-zi-fen-xi/image-20220501102944518.png">
+
+
+<link rel="canonical" href="https://tangbingqing.github.io/2022/05/01/duo-yuan-yin-zi-fen-xi/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://tangbingqing.github.io/2022/05/01/duo-yuan-yin-zi-fen-xi/","path":"2022/05/01/duo-yuan-yin-zi-fen-xi/","title":"多元-因子分析"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>多元-因子分析 | T.ng</title>
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">T.ng</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-主页"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>主页</a></li><li class="menu-item menu-item-标签"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-分类"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-关于"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link"><span class="nav-number">1.</span> <span class="nav-text">因子分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link"><span class="nav-number">2.</span> <span class="nav-text">实验：</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="T.ng"
+      src="/images/head.jpg">
+  <p class="site-author-name" itemprop="name">T.ng</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">27</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/tangbingqing" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;tangbingqing" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://tangbingqing.github.io/2022/05/01/duo-yuan-yin-zi-fen-xi/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="T.ng">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="T.ng">
+      <meta itemprop="description" content="">
+    </span>
+    
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="多元-因子分析 | T.ng">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          多元-因子分析
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2022-05-01 11:12:41 / 修改时间：21:56:31" itemprop="dateCreated datePublished" datetime="2022-05-01T11:12:41+08:00">2022-05-01</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%A4%9A%E5%85%83%E7%BB%9F%E8%AE%A1/" itemprop="url" rel="index"><span itemprop="name">多元统计</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h3><span id="因子分析">因子分析</span></h3><pre class="line-numbers language-python" data-language="python"><code class="language-python">factor_analyzer<span class="token punctuation">.</span>FactorAnalyzer<span class="token punctuation">(</span>n_factors<span class="token operator">=</span><span class="token number">3</span> <span class="token punctuation">,</span> rotation<span class="token operator">=</span><span class="token string">'promax'</span> <span class="token punctuation">,</span> method<span class="token operator">=</span><span class="token string">'minres'</span> <span class="token punctuation">)</span>
+
+<span class="token comment"># n_factors : 要选择的因素的数量。默认为 3</span>
+
+<span class="token comment"># rotation : 旋转</span>
+varimax（正交旋转）
+promax（倾斜旋转）
+oblimin（倾斜旋转）
+oblimax（正交旋转）
+quartimin（斜向旋转）
+quartimax（正交旋转）
+equamax（正交旋转）
+
+<span class="token comment"># method ：要使用的拟合方法</span>
+minres（主因子法） <span class="token punctuation">,</span> ml（主因子法） <span class="token punctuation">,</span> principal（主成分法）
+
+
+属性：
+loadings ： 因子载荷矩阵
+get_communalities ： 因子共同度，所有因子对各变量的贡献率（Xi对公因子F的依赖程度）
+get_factor_variance ：每个因子的方差、比例方差和累积方差
+get_factor_variance<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">[</span><span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">]</span> ： 各因子累计贡献率
+
+get_eigenvalues<span class="token punctuation">(</span><span class="token punctuation">)</span> ：因子特征值，原始特征值和公因子特征值
+transform<span class="token punctuation">(</span><span class="token punctuation">)</span> ： 因子得分，每条数据的公因子表示形式
+rotation_matrix ： 旋转矩阵<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<h3><span id="实验">实验：</span></h3><pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">import</span> pandas <span class="token keyword">as</span> pd
+<span class="token keyword">import</span> matplotlib<span class="token punctuation">.</span>pyplot <span class="token keyword">as</span> plt
+<span class="token keyword">import</span> matplotlib
+<span class="token keyword">import</span> numpy <span class="token keyword">as</span> np
+<span class="token keyword">import</span> random
+
+
+<span class="token keyword">from</span> factor_analyzer <span class="token keyword">import</span> FactorAnalyzer
+<span class="token keyword">from</span> sklearn <span class="token keyword">import</span> datasets
+<span class="token keyword">import</span> seaborn <span class="token keyword">as</span> sns
+
+
+<span class="token comment"># 下载数据</span>
+datasets<span class="token punctuation">.</span>clear_data_home<span class="token punctuation">(</span><span class="token punctuation">)</span>
+data <span class="token operator">=</span> datasets<span class="token punctuation">.</span>load_iris<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span>data
+
+
+fa <span class="token operator">=</span> FactorAnalyzer<span class="token punctuation">(</span>n_factors<span class="token operator">=</span><span class="token number">2</span><span class="token punctuation">,</span>rotation<span class="token operator">=</span><span class="token boolean">None</span><span class="token punctuation">,</span>method<span class="token operator">=</span><span class="token string">'minres'</span><span class="token punctuation">)</span>
+fa<span class="token punctuation">.</span>fit<span class="token punctuation">(</span>data<span class="token punctuation">)</span>
+
+
+<span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string-interpolation"><span class="token string">f"各因子的累计贡献率为"</span></span><span class="token punctuation">)</span>
+<span class="token keyword">print</span><span class="token punctuation">(</span>fa<span class="token punctuation">.</span>get_factor_variance<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">[</span><span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+<span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string-interpolation"><span class="token string">f"所有因子多各变量的贡献率为"</span></span><span class="token punctuation">)</span>
+<span class="token keyword">print</span><span class="token punctuation">(</span>fa<span class="token punctuation">.</span>get_communalities<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+
+
+<span class="token comment"># 方差贡献率</span>
+
+ev<span class="token punctuation">,</span> v <span class="token operator">=</span> fa<span class="token punctuation">.</span>get_eigenvalues<span class="token punctuation">(</span><span class="token punctuation">)</span>  <span class="token comment"># 原始特征值和公因子特征值</span>
+ratio<span class="token operator">=</span>np<span class="token punctuation">.</span>cumsum<span class="token punctuation">(</span>ev<span class="token punctuation">)</span><span class="token operator">/</span>np<span class="token punctuation">.</span><span class="token builtin">sum</span><span class="token punctuation">(</span>ev<span class="token punctuation">)</span>  <span class="token comment"># 方差贡献率=该因子的特征值/所有因子特征值之和</span>
+plt<span class="token punctuation">.</span>scatter<span class="token punctuation">(</span><span class="token builtin">range</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span>data<span class="token punctuation">.</span>shape<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token operator">+</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">,</span>ratio<span class="token punctuation">)</span>  <span class="token comment"># 绘点</span>
+plt<span class="token punctuation">.</span>plot<span class="token punctuation">(</span><span class="token builtin">range</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span>data<span class="token punctuation">.</span>shape<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token operator">+</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">,</span>ratio<span class="token punctuation">)</span>   <span class="token comment"># 绘曲线</span>
+plt<span class="token punctuation">.</span>title<span class="token punctuation">(</span><span class="token string">'Scree Plot'</span><span class="token punctuation">)</span>
+plt<span class="token punctuation">.</span>xlabel<span class="token punctuation">(</span><span class="token string">'Factors'</span><span class="token punctuation">)</span>
+plt<span class="token punctuation">.</span>ylabel<span class="token punctuation">(</span><span class="token string">'Eigenvalue'</span><span class="token punctuation">)</span>
+plt<span class="token punctuation">.</span>grid<span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token comment"># a</span>
+plt<span class="token punctuation">.</span>show<span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+
+<span class="token comment"># 相关系数</span>
+
+df_cm <span class="token operator">=</span> pd<span class="token punctuation">.</span>DataFrame<span class="token punctuation">(</span>np<span class="token punctuation">.</span><span class="token builtin">abs</span><span class="token punctuation">(</span>fa<span class="token punctuation">.</span>loadings_<span class="token punctuation">)</span><span class="token punctuation">)</span>
+plt<span class="token punctuation">.</span>figure<span class="token punctuation">(</span>figsize <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token number">14</span><span class="token punctuation">,</span><span class="token number">14</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+ax <span class="token operator">=</span> sns<span class="token punctuation">.</span>heatmap<span class="token punctuation">(</span>df_cm<span class="token punctuation">,</span> annot<span class="token operator">=</span><span class="token boolean">True</span><span class="token punctuation">,</span> cmap<span class="token operator">=</span><span class="token string">"BuPu"</span><span class="token punctuation">)</span>
+
+ax<span class="token punctuation">.</span>yaxis<span class="token punctuation">.</span>set_tick_params<span class="token punctuation">(</span>labelsize<span class="token operator">=</span><span class="token number">15</span><span class="token punctuation">)</span>
+plt<span class="token punctuation">.</span>title<span class="token punctuation">(</span><span class="token string">'Factor Analysis'</span><span class="token punctuation">,</span> fontsize<span class="token operator">=</span><span class="token string">'xx-large'</span><span class="token punctuation">)</span>
+plt<span class="token punctuation">.</span>ylabel<span class="token punctuation">(</span><span class="token string">'Sepal Width'</span><span class="token punctuation">,</span> fontsize<span class="token operator">=</span><span class="token string">'xx-large'</span><span class="token punctuation">)</span>
+plt<span class="token punctuation">.</span>savefig<span class="token punctuation">(</span><span class="token string">'factorAnalysis.png'</span><span class="token punctuation">,</span> dpi<span class="token operator">=</span><span class="token number">500</span><span class="token punctuation">)</span>
+<span class="token comment"># 颜色越深，相关程度越大</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+
+
+<p><img src="/2022/05/01/duo-yuan-yin-zi-fen-xi/image-20220501102944518.png" alt="image-20220501102944518"></p>
+<p><img src="/2022/05/01/duo-yuan-yin-zi-fen-xi/image-20220501102928221.png" alt="image-20220501102928221"></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/04/30/duo-yuan-zhu-cheng-fen-fen-xi/" rel="prev" title="多元统计 - 主成分分析">
+                  <i class="fa fa-chevron-left"></i> 多元统计 - 主成分分析
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2022/05/01/duo-yuan-dian-xing-xiang-guan-fen-xi/" rel="next" title="多元统计 - 典型相关分析">
+                  多元统计 - 典型相关分析 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">T.ng</span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+</body>
+</html>

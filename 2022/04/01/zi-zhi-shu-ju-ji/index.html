@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.1.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.jpg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.jpg">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.0.0/css/all.min.css" integrity="sha256-jTIdiMuX/e3DGJUGwl3pKSxuc6YOuqtJYkM0bGQESA4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"tangbingqing.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.10.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="一、数据预处理（resize） 二、Dataset类 1、制作图片数据的索引 2、构建Dataset子类 3、制作包含路径和标签的txt文件 3、读取txt文件，继承Dataset   ps:处理缺失数据     一、数据预处理（resize）数据在神经网络的模型中进行传播前首先需要保证尺寸相同(对于所有图像，我们将其Resize到100x100的尺寸) import cv2 import os">
+<meta property="og:type" content="article">
+<meta property="og:title" content="自制数据集">
+<meta property="og:url" content="https://tangbingqing.github.io/2022/04/01/zi-zhi-shu-ju-ji/index.html">
+<meta property="og:site_name" content="T.ng">
+<meta property="og:description" content="一、数据预处理（resize） 二、Dataset类 1、制作图片数据的索引 2、构建Dataset子类 3、制作包含路径和标签的txt文件 3、读取txt文件，继承Dataset   ps:处理缺失数据     一、数据预处理（resize）数据在神经网络的模型中进行传播前首先需要保证尺寸相同(对于所有图像，我们将其Resize到100x100的尺寸) import cv2 import os">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://tangbingqing.github.io/2022/04/01/zi-zhi-shu-ju-ji/202008261737219-16442337220204.png">
+<meta property="article:published_time" content="2022-04-01T11:42:42.000Z">
+<meta property="article:modified_time" content="2022-04-01T11:44:34.280Z">
+<meta property="article:author" content="T.ng">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://tangbingqing.github.io/2022/04/01/zi-zhi-shu-ju-ji/202008261737219-16442337220204.png">
+
+
+<link rel="canonical" href="https://tangbingqing.github.io/2022/04/01/zi-zhi-shu-ju-ji/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://tangbingqing.github.io/2022/04/01/zi-zhi-shu-ju-ji/","path":"2022/04/01/zi-zhi-shu-ju-ji/","title":"自制数据集"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>自制数据集 | T.ng</title>
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">T.ng</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-主页"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>主页</a></li><li class="menu-item menu-item-标签"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-分类"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-关于"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">1.</span> <span class="nav-text">一、数据预处理（resize）</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">2.</span> <span class="nav-text">二、Dataset类</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link"><span class="nav-number">2.0.1.</span> <span class="nav-text">1、制作图片数据的索引</span></a></li><li class="nav-item nav-level-3"><a class="nav-link"><span class="nav-number">2.0.2.</span> <span class="nav-text">2、构建Dataset子类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link"><span class="nav-number">2.0.3.</span> <span class="nav-text">3、制作包含路径和标签的txt文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link"><span class="nav-number">2.0.4.</span> <span class="nav-text">3、读取txt文件，继承Dataset</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">3.</span> <span class="nav-text">ps:处理缺失数据</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="T.ng"
+      src="/images/head.jpg">
+  <p class="site-author-name" itemprop="name">T.ng</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">27</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/tangbingqing" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;tangbingqing" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://tangbingqing.github.io/2022/04/01/zi-zhi-shu-ju-ji/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="T.ng">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="T.ng">
+      <meta itemprop="description" content="">
+    </span>
+    
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="自制数据集 | T.ng">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          自制数据集
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2022-04-01 19:42:42 / 修改时间：19:44:34" itemprop="dateCreated datePublished" datetime="2022-04-01T19:42:42+08:00">2022-04-01</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%95%B0%E6%8D%AE%E5%A4%84%E7%90%86/" itemprop="url" rel="index"><span itemprop="name">数据处理</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <ul>
+<li><a href="#%E4%B8%80-%E6%95%B0%E6%8D%AE%E9%A2%84%E5%A4%84%E7%90%86resize">一、数据预处理（resize）</a></li>
+<li><a href="#%E4%BA%8C-dataset%E7%B1%BB">二、Dataset类</a><ul>
+<li><a href="#1-%E5%88%B6%E4%BD%9C%E5%9B%BE%E7%89%87%E6%95%B0%E6%8D%AE%E7%9A%84%E7%B4%A2%E5%BC%95">1、制作图片数据的索引</a></li>
+<li><a href="#2-%E6%9E%84%E5%BB%BAdataset%E5%AD%90%E7%B1%BB">2、构建Dataset子类</a></li>
+<li><a href="#3-%E5%88%B6%E4%BD%9C%E5%8C%85%E5%90%AB%E8%B7%AF%E5%BE%84%E5%92%8C%E6%A0%87%E7%AD%BE%E7%9A%84txt%E6%96%87%E4%BB%B6">3、制作包含路径和标签的txt文件</a></li>
+<li><a href="#3-%E8%AF%BB%E5%8F%96txt%E6%96%87%E4%BB%B6%E7%BB%A7%E6%89%BFdataset">3、读取txt文件，继承Dataset</a></li>
+</ul>
+</li>
+<li><a href="#ps%E5%A4%84%E7%90%86%E7%BC%BA%E5%A4%B1%E6%95%B0%E6%8D%AE">ps:处理缺失数据</a></li>
+</ul>
+<!-- tocstop -->
+
+<p><img src="/2022/04/01/zi-zhi-shu-ju-ji/202008261737219-16442337220204.png" alt="img"></p>
+<h1><span id="一-数据预处理resize">一、数据预处理（resize）</span></h1><p>数据在神经网络的模型中进行传播前首先需要保证尺寸相同(对于所有图像，我们将其Resize到100x100的尺寸)</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">import</span> cv2
+<span class="token keyword">import</span> os
+<span class="token keyword">from</span> tqdm <span class="token keyword">import</span> tqdm
+
+DataPath<span class="token operator">=</span><span class="token string">r'TrainingData'</span><span class="token comment"># 训练数据</span>
+SavePath<span class="token operator">=</span><span class="token string">r'ResizedData'</span>
+
+<span class="token keyword">for</span> img_dir <span class="token keyword">in</span> os<span class="token punctuation">.</span>listdir<span class="token punctuation">(</span>DataPath<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token comment"># 包含类别信息的文件夹</span>
+    img_label_path<span class="token operator">=</span>os<span class="token punctuation">.</span>path<span class="token punctuation">.</span>join<span class="token punctuation">(</span>DataPath<span class="token punctuation">,</span>img_dir<span class="token punctuation">)</span>
+    <span class="token comment"># 存储处理后的图片的文件夹</span>
+    save_label_path<span class="token operator">=</span>os<span class="token punctuation">.</span>path<span class="token punctuation">.</span>join<span class="token punctuation">(</span>SavePath<span class="token punctuation">,</span>img_dir<span class="token punctuation">)</span>
+    <span class="token keyword">if</span> <span class="token keyword">not</span> os<span class="token punctuation">.</span>path<span class="token punctuation">.</span>exists<span class="token punctuation">(</span>save_label_path<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        os<span class="token punctuation">.</span>mkdir<span class="token punctuation">(</span>save_label_path<span class="token punctuation">)</span>
+    <span class="token keyword">for</span> image <span class="token keyword">in</span> tbar<span class="token punctuation">:</span>
+        <span class="token comment"># 进入到文件夹下进行图片遍历</span>
+        image_path<span class="token operator">=</span>os<span class="token punctuation">.</span>path<span class="token punctuation">.</span>join<span class="token punctuation">(</span>img_label_path<span class="token punctuation">,</span>image<span class="token punctuation">)</span>
+        <span class="token comment"># 使用cv2读取图片</span>
+        image_old<span class="token operator">=</span>cv2<span class="token punctuation">.</span>imread<span class="token punctuation">(</span>image_path<span class="token punctuation">)</span>
+        image_new<span class="token operator">=</span>cv2<span class="token punctuation">.</span>resize<span class="token punctuation">(</span>image_old<span class="token punctuation">,</span><span class="token punctuation">(</span><span class="token number">100</span><span class="token punctuation">,</span><span class="token number">100</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+        <span class="token comment"># 保存图像</span>
+        save_path<span class="token operator">=</span>os<span class="token punctuation">.</span>path<span class="token punctuation">.</span>join<span class="token punctuation">(</span>save_label_path<span class="token punctuation">,</span>image<span class="token punctuation">)</span>
+        cv2<span class="token punctuation">.</span>imwrite<span class="token punctuation">(</span>save_path<span class="token punctuation">,</span>image_new<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<h1><span id="二-dataset类">二、Dataset类</span></h1><p>​        Dataset类作为所有的datasets的基类存在，所有的datasets都需要继承它，其中父类中的两个私有成员函数必须被重载，否则将会触发错误提示。</p>
+<p>​        重点看 getitem函数，getitem接收一个index，然后返回图片数据和标签，这个index通常指的是一个list的index，这个list的每个元素就包含了图片数据的路径和标签信息。</p>
+<p>​        然而，如何制作这个list呢，通常的方法是将图片的路径和标签信息存储在一个txt中，然后从该txt中读取。那么读取自己数据的基本流程就是：</p>
+<p>1.制作存储了图片的路径和标签信息的txt<br>2.将这些信息转化为list，该list每一个元素对应一个样本<br>3.通过getitem函数，读取数据和标签，并返回数据和标签</p>
+<h3><span id="1-制作图片数据的索引">1、制作图片数据的索引</span></h3><h3><span id="2-构建dataset子类">2、构建Dataset子类</span></h3><p>图像存储在一个目录<code>img_dir</code>中，它们的标签分别存储在一个 CSV 文件<code>annotations_file</code>中</p>
+<p>​        __init__函数在实例化 Dataset 对象时运行一次,初始化包含图像、注释文件和两种转换的目录</p>
+<p>​        1、初始化中从我们准备好的txt里获取图片的路径和标签, 2、transform是一个Compose类型，里边有一个list，list中就会定义了各种对图像进行处理的操作，可以设置减均值，除标准差，随机裁剪，旋转，翻转，仿射变换</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">def</span> <span class="token function">__init___</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span>txtpath<span class="token punctuation">,</span>transform <span class="token operator">=</span> <span class="token boolean">None</span><span class="token punctuation">,</span>target_transform <span class="token operator">=</span> <span class="token boolean">None</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token builtin">super</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span>__init__<span class="token punctuation">(</span><span class="token punctuation">)</span>
+    self<span class="token punctuation">.</span>ims<span class="token punctuation">,</span>self<span class="token punctuation">.</span>labels <span class="token operator">=</span> read_txt<span class="token punctuation">(</span>txtpath<span class="token punctuation">)</span>
+    self<span class="token punctuation">.</span>transform <span class="token operator">=</span> transform
+    self<span class="token punctuation">.</span>target_transform <span class="token operator">=</span> target_transform<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<pre><code>     ==__getitem__ 函数==从给定索引处的数据集中加载并返回一个样本idx。基于索引，它识别图像在磁盘上的位置，使用将其转换为张量read_image，从 csv 数据中检索相应的标签self.img_labels，调用它们的变换函数（如果适用），并返回张量图像和相应的标签一个元组。
+</code></pre>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">def</span> <span class="token function">__getitem__</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span>index<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    im_path <span class="token operator">=</span> self<span class="token punctuation">.</span>ims<span class="token punctuation">[</span>index<span class="token punctuation">]</span>
+       label <span class="token operator">=</span> self<span class="token punctuation">.</span>labels<span class="token punctuation">[</span>index<span class="token punctuation">]</span>
+    <span class="token comment"># 利用Image.open对图片进行读取，img类型为 Image ，mode=‘RGB’</span>
+    image <span class="token operator">=</span> Image<span class="token punctuation">.</span><span class="token builtin">open</span><span class="token punctuation">(</span>im_path<span class="token punctuation">)</span> 
+    transf <span class="token operator">=</span> transforms<span class="token punctuation">.</span>ToTensor<span class="token punctuation">(</span><span class="token punctuation">)</span>
+    image <span class="token operator">=</span> transf<span class="token punctuation">(</span>image<span class="token punctuation">)</span>
+    label <span class="token operator">=</span> torch<span class="token punctuation">.</span>from_numpy<span class="token punctuation">(</span>np<span class="token punctuation">.</span>asarry<span class="token punctuation">(</span>label<span class="token punctuation">,</span>dtype <span class="token operator">=</span> np<span class="token punctuation">.</span>int32<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token builtin">long</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token keyword">return</span> image<span class="token punctuation">,</span>label<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>​         <strong>len</strong> 函数返回我们数据集中的样本数</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">def</span> <span class="token function">__len__</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token keyword">return</span> <span class="token builtin">len</span><span class="token punctuation">(</span>self<span class="token punctuation">.</span>ims<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+
+
+<h3><span id="3-制作包含路径和标签的txt文件">3、制作包含路径和标签的txt文件</span></h3><p>路径建议使用绝对路径，以防文件相对位置发生变化时读取失败。<br>标签一定要是<strong>整型</strong>变量（张量求梯度），一定要从0开始。</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">import</span> os
+<span class="token keyword">import</span> random
+
+datapath <span class="token operator">=</span> <span class="token string">r'ResizedData'</span><span class="token comment"># 训练数据</span>
+absolutePath <span class="token operator">=</span> <span class="token string">r'D:\data'</span><span class="token comment"># 这里需要替换成catvsdog的绝对路径</span>
+label <span class="token operator">=</span> <span class="token number">0</span>
+
+<span class="token keyword">if</span> __name__ <span class="token operator">==</span> <span class="token string">"__main__"</span><span class="token punctuation">:</span>
+    <span class="token keyword">for</span> dataclass <span class="token keyword">in</span> os<span class="token punctuation">.</span>listdir<span class="token punctuation">(</span>datapath<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        
+        <span class="token comment"># 读取猫狗数据  ##直接返回这一（拼接）路径下文件组成的列表</span>
+        data <span class="token operator">=</span> os<span class="token punctuation">.</span>listdir<span class="token punctuation">(</span>os<span class="token punctuation">.</span>path<span class="token punctuation">.</span>join<span class="token punctuation">(</span>datapath<span class="token punctuation">,</span>dataclass<span class="token punctuation">)</span><span class="token punctuation">)</span>
+        random<span class="token punctuation">.</span>shuffle<span class="token punctuation">(</span>data<span class="token punctuation">)</span>
+
+        <span class="token comment"># 训练集大小：占所有数据的4/5.  # 将图片按照8:2划分为训练、验证</span>
+        train_len <span class="token operator">=</span> <span class="token builtin">len</span><span class="token punctuation">(</span>data<span class="token punctuation">)</span> <span class="token operator">*</span> <span class="token number">4</span> <span class="token operator">//</span> <span class="token number">5</span>
+        train_list<span class="token punctuation">,</span>test_list <span class="token operator">=</span> data<span class="token punctuation">[</span><span class="token punctuation">:</span>train_len<span class="token punctuation">]</span><span class="token punctuation">,</span>data<span class="token punctuation">[</span>train_len<span class="token punctuation">:</span><span class="token punctuation">]</span>
+
+        <span class="token comment"># 将训练集写入train.txt</span>
+        <span class="token keyword">with</span> <span class="token builtin">open</span><span class="token punctuation">(</span>os<span class="token punctuation">.</span>path<span class="token punctuation">.</span>join<span class="token punctuation">(</span>absolutePath<span class="token punctuation">,</span><span class="token string">'train.txt'</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string">'a+'</span><span class="token punctuation">)</span><span class="token keyword">as</span> f<span class="token punctuation">:</span>
+            <span class="token keyword">for</span> img <span class="token keyword">in</span> train_list<span class="token punctuation">:</span>
+                f<span class="token punctuation">.</span>write<span class="token punctuation">(</span>os<span class="token punctuation">.</span>path<span class="token punctuation">.</span>join<span class="token punctuation">(</span>absolutePath<span class="token punctuation">,</span>datapath<span class="token punctuation">,</span>dataclass<span class="token punctuation">,</span>img<span class="token punctuation">)</span><span class="token operator">+</span> <span class="token string">' '</span> <span class="token operator">+</span> <span class="token builtin">str</span><span class="token punctuation">(</span>label<span class="token punctuation">)</span><span class="token operator">+</span><span class="token string">'\n'</span><span class="token punctuation">)</span>
+        <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">"标签为{}的训练集图片处理完毕"</span><span class="token punctuation">.</span><span class="token builtin">format</span><span class="token punctuation">(</span>dataclass<span class="token punctuation">)</span><span class="token punctuation">)</span>
+
+        <span class="token comment"># 将验证集写入test.txt</span>
+        <span class="token keyword">with</span> <span class="token builtin">open</span><span class="token punctuation">(</span>os<span class="token punctuation">.</span>path<span class="token punctuation">.</span>join<span class="token punctuation">(</span>absolutePath<span class="token punctuation">,</span><span class="token string">'test.txt'</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string">'a+'</span><span class="token punctuation">)</span><span class="token keyword">as</span> f<span class="token punctuation">:</span>
+            <span class="token keyword">for</span> img <span class="token keyword">in</span> test_list<span class="token punctuation">:</span>
+                f<span class="token punctuation">.</span>write<span class="token punctuation">(</span>os<span class="token punctuation">.</span>path<span class="token punctuation">.</span>join<span class="token punctuation">(</span>absolutePath<span class="token punctuation">,</span>datapath<span class="token punctuation">,</span>dataclass<span class="token punctuation">,</span>img<span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">' '</span> <span class="token operator">+</span> <span class="token builtin">str</span><span class="token punctuation">(</span>label<span class="token punctuation">)</span><span class="token operator">+</span><span class="token string">'\n'</span><span class="token punctuation">)</span>
+        <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">"标签为{}的验证集图片处理完毕"</span><span class="token punctuation">.</span><span class="token builtin">format</span><span class="token punctuation">(</span>dataclass<span class="token punctuation">)</span><span class="token punctuation">)</span>
+
+        label<span class="token operator">+=</span><span class="token number">1</span>
+        <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3><span id="3-读取txt文件继承dataset">3、读取txt文件，继承Dataset</span></h3><pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">import</span> torch
+<span class="token keyword">import</span> numpy <span class="token keyword">as</span> np
+<span class="token keyword">from</span> PIL <span class="token keyword">import</span> Image
+<span class="token keyword">from</span> torch<span class="token punctuation">.</span>utils<span class="token punctuation">.</span>data<span class="token punctuation">.</span>dataset <span class="token keyword">import</span> Dataset
+<span class="token keyword">import</span> torchvision<span class="token punctuation">.</span>transforms <span class="token keyword">as</span> transforms
+
+<span class="token keyword">def</span> <span class="token function">read_txt</span><span class="token punctuation">(</span>path<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    ims<span class="token punctuation">,</span>labels <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span><span class="token punctuation">[</span><span class="token punctuation">]</span>
+    <span class="token keyword">with</span> <span class="token builtin">open</span><span class="token punctuation">(</span>path<span class="token punctuation">,</span><span class="token string">'r'</span><span class="token punctuation">)</span> <span class="token keyword">as</span> <span class="token builtin">file</span><span class="token punctuation">:</span>
+        <span class="token keyword">for</span> sample <span class="token keyword">in</span> <span class="token builtin">file</span><span class="token punctuation">.</span>readlines<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+            im<span class="token punctuation">,</span>label <span class="token operator">=</span> sample<span class="token punctuation">.</span>strip<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span>spilt<span class="token punctuation">(</span><span class="token string">" "</span><span class="token punctuation">)</span>
+            ims<span class="token punctuation">.</span>append<span class="token punctuation">(</span>im<span class="token punctuation">)</span>
+            labels<span class="token punctuation">.</span>append<span class="token punctuation">(</span>label<span class="token punctuation">)</span>
+    <span class="token keyword">return</span> ims<span class="token punctuation">,</span>labels
+
+<span class="token keyword">class</span> <span class="token class-name">Dataset</span><span class="token punctuation">(</span>dataset<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token comment"># txtpath就是上面提到的list，其一个元素对应一个样本的路径和标签，其实就是txt中的一行</span>
+    <span class="token keyword">def</span> <span class="token function">__init___</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span>txtpath<span class="token punctuation">,</span>transform <span class="token operator">=</span> <span class="token boolean">None</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token builtin">super</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span>__init__<span class="token punctuation">(</span><span class="token punctuation">)</span>
+        self<span class="token punctuation">.</span>ims<span class="token punctuation">,</span>self<span class="token punctuation">.</span>labels <span class="token operator">=</span> read_txt<span class="token punctuation">(</span>txtpath<span class="token punctuation">)</span>
+        self<span class="token punctuation">.</span>transform <span class="token operator">=</span> transform
+    <span class="token keyword">def</span> <span class="token function">__getitem__</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span>index<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        image <span class="token operator">=</span> Image<span class="token punctuation">.</span><span class="token builtin">open</span><span class="token punctuation">(</span>im_path<span class="token punctuation">)</span>
+        transf <span class="token operator">=</span> transforms<span class="token punctuation">.</span>ToTensor<span class="token punctuation">(</span><span class="token punctuation">)</span>
+        image <span class="token operator">=</span> transf<span class="token punctuation">(</span>image<span class="token punctuation">)</span>
+        label <span class="token operator">=</span> torch<span class="token punctuation">.</span>from_numpy<span class="token punctuation">(</span>np<span class="token punctuation">.</span>asarry<span class="token punctuation">(</span>label<span class="token punctuation">,</span>dtype <span class="token operator">=</span> np<span class="token punctuation">.</span>int32<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token builtin">long</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+        <span class="token keyword">return</span> image<span class="token punctuation">,</span>label
+    <span class="token keyword">def</span> <span class="token function">__len__</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token keyword">return</span> <span class="token builtin">len</span><span class="token punctuation">(</span>self<span class="token punctuation">.</span>ims<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<h1><span id="ps处理缺失数据">ps:处理缺失数据</span></h1><pre class="line-numbers language-python" data-language="python"><code class="language-python">inputs<span class="token punctuation">,</span> outputs <span class="token operator">=</span> data<span class="token punctuation">.</span>iloc<span class="token punctuation">[</span><span class="token punctuation">:</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">:</span><span class="token number">2</span><span class="token punctuation">]</span><span class="token punctuation">,</span>data<span class="token punctuation">.</span>iloc<span class="token punctuation">[</span><span class="token punctuation">:</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">]</span>
+<span class="token comment"># 数值</span>
+inputs <span class="token operator">=</span> inputs<span class="token punctuation">.</span>fillna<span class="token punctuation">(</span>inputs<span class="token punctuation">.</span>mean<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>  <span class="token comment"># 插值</span>
+<span class="token comment"># 不是数值，把这特别的类转为值</span>
+inputs <span class="token operator">=</span> pd<span class="token punctuation">.</span>get_dummies<span class="token punctuation">(</span>inputs<span class="token punctuation">,</span>dummy_na<span class="token operator">=</span><span class="token boolean">True</span><span class="token punctuation">)</span>
+x<span class="token punctuation">,</span>y <span class="token operator">=</span> torch<span class="token punctuation">.</span>tensor<span class="token punctuation">(</span>inputs<span class="token punctuation">.</span>values<span class="token punctuation">)</span><span class="token punctuation">,</span>torch<span class="token punctuation">.</span>tensor<span class="token punctuation">(</span>outputs<span class="token punctuation">.</span>values<span class="token punctuation">)</span> <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/04/01/opencv/" rel="prev" title="opencv">
+                  <i class="fa fa-chevron-left"></i> opencv
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2022/04/01/pi-liang-chong-ming-ming/" rel="next" title="批量重命名">
+                  批量重命名 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">T.ng</span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+</body>
+</html>
