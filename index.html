@@ -204,9 +204,15 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">发表于</span>
-      
 
-      <time title="创建时间：2022-05-01 20:12:41 / 修改时间：21:56:58" itemprop="dateCreated datePublished" datetime="2022-05-01T20:12:41+08:00">2022-05-01</time>
+      <time title="创建时间：2022-05-01 20:12:41" itemprop="dateCreated datePublished" datetime="2022-05-01T20:12:41+08:00">2022-05-01</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2022-05-08 16:28:10" itemprop="dateModified" datetime="2022-05-08T16:28:10+08:00">2022-05-08</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -259,7 +265,7 @@
 <td></td>
 <td>样本矩阵X是列满秩，列之间线性相关较小</td>
 <td></td>
-<td>不符合使用条件时，计算误差大，缺乏稳定性和可靠性</td>
+<td>样本矩阵X不是列满秩或者列之间的线性相关性比较大时，计算误差大，缺乏稳定性和可靠性</td>
 </tr>
 <tr>
 <td></td>
@@ -276,7 +282,7 @@
 <td><strong>岭回归</strong></td>
 <td>l2正则化，通过放弃最小二乘法的无偏性</td>
 <td>专用于共线性数据分析</td>
-<td>更符合实际、更可靠，对病态数据的拟合强于最小二乘法</td>
+<td>更符合实际、更可靠，对<strong>病态数据</strong>的拟合强于最小二乘法</td>
 <td>损失部分信息、降低精度</td>
 </tr>
 <tr>
@@ -317,7 +323,7 @@
 </tr>
 <tr>
 <td><strong>对应分析</strong></td>
-<td>成对<strong>离散型变量</strong>的各水平相互关系</td>
+<td>成对<strong>离散型变量</strong>的各水平相互关系，描述二维和多维列联表数据</td>
 <td></td>
 <td>对应分析将变量及变量之间的联系同时反映在一张二维或三维的散点图上，并使联系密切的水平点较集中，联系疏远的水平点较分散</td>
 <td></td>
@@ -335,7 +341,7 @@
 </tr>
 <tr>
 <td><strong>因子分析</strong></td>
-<td>1、寻求基本结构，简化观测系统  2、用于分类,对p个变量或n个样品进行分类</td>
+<td>找到影响因变量的不可观测的独立变量</td>
 <td></td>
 <td>从变量群中提取<strong>共性因子</strong>的统计技术，即将相同本质的变量归入一个因子，可减少变量的数目，还可检验变量间关系的假设。</td>
 <td></td>
@@ -344,9 +350,52 @@
 </tr>
 <tr>
 <td><strong>典型相关分析</strong></td>
-<td>寻找两组变量间存在由大到小的典型的线性相似度序列</td>
+<td>识别和测量<strong>两组</strong>变量之间的关系</td>
 <td></td>
 <td>1、在每组变量中找出变量的线性组合，使得两组的线性组合之间具有最大的相关系  2、重复到两组变量之间的相关性被提取完毕</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>区别</th>
+<th>共同缺点</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>主成分分析</td>
+<td>少数主成分代表原数据部分信息</td>
+<td>选择哪些变量参与建模，太过主观</td>
+</tr>
+<tr>
+<td>因子分析</td>
+<td>少数因子代表全部数据的信息，有一个随机模型，把原始的p个变量转换成少数不相关的m个因子</td>
+<td></td>
+</tr>
+</tbody></table>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>区别</th>
+<th></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>分类</td>
+<td>带有一定的目的，不同目的分类结果也会不同，受到各个变量的影响各不相同</td>
+<td></td>
+</tr>
+<tr>
+<td>聚类</td>
+<td>所有变量都被同等使用</td>
+<td></td>
+</tr>
+<tr>
 <td></td>
 <td></td>
 <td></td>
@@ -718,7 +767,7 @@ plt<span class="token punctuation">.</span>savefig<span class="token punctuation
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2022-05-01 15:04:12" itemprop="dateModified" datetime="2022-05-01T15:04:12+08:00">2022-05-01</time>
+      <time title="修改时间：2022-05-07 13:00:38" itemprop="dateModified" datetime="2022-05-07T13:00:38+08:00">2022-05-07</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -740,7 +789,8 @@ plt<span class="token punctuation">.</span>savefig<span class="token punctuation
     
     
     <div class="post-body" itemprop="articleBody">
-          <h3><span id="缺失值补全">缺失值补全</span></h3><pre class="line-numbers language-python" data-language="python"><code class="language-python">imr <span class="token operator">=</span> SimpleImputer<span class="token punctuation">(</span><span class="token operator">*</span><span class="token punctuation">,</span> missing_values<span class="token operator">=</span>nan<span class="token punctuation">,</span> strategy<span class="token operator">=</span><span class="token string">'mean'</span><span class="token punctuation">,</span> fill_value<span class="token operator">=</span><span class="token boolean">None</span><span class="token punctuation">,</span> verbose<span class="token operator">=</span><span class="token number">0</span><span class="token punctuation">)</span>
+          <h3><span id="主成分分析">主成分分析</span></h3><p>在变量相关时寻找不相关的线性组合，这些组合成为成分</p>
+<h3><span id="缺失值补全">缺失值补全</span></h3><pre class="line-numbers language-python" data-language="python"><code class="language-python">imr <span class="token operator">=</span> SimpleImputer<span class="token punctuation">(</span><span class="token operator">*</span><span class="token punctuation">,</span> missing_values<span class="token operator">=</span>nan<span class="token punctuation">,</span> strategy<span class="token operator">=</span><span class="token string">'mean'</span><span class="token punctuation">,</span> fill_value<span class="token operator">=</span><span class="token boolean">None</span><span class="token punctuation">,</span> verbose<span class="token operator">=</span><span class="token number">0</span><span class="token punctuation">)</span>
 data <span class="token operator">=</span> imr<span class="token punctuation">.</span>fit_transform<span class="token punctuation">(</span>data<span class="token punctuation">)</span>
 
 <span class="token comment"># 缺失值占位符</span>
@@ -895,7 +945,7 @@ yasuobi <span class="token operator">=</span> <span class="token punctuation">[<
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2022-05-01 16:28:41" itemprop="dateModified" datetime="2022-05-01T16:28:41+08:00">2022-05-01</time>
+      <time title="修改时间：2022-05-08 10:03:29" itemprop="dateModified" datetime="2022-05-08T10:03:29+08:00">2022-05-08</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -932,7 +982,7 @@ scipy<span class="token punctuation">.</span>cluster<span class="token punctuati
 
 
 
-<span class="token comment"># 从给定的链接矩阵定义的层次聚类中形成平面聚类</span>
+<span class="token comment"># 从给定的链接矩阵定义的层次聚类中形成平面聚类，构造集群</span>
 
 fcluster<span class="token punctuation">(</span>Z<span class="token punctuation">,</span> t<span class="token punctuation">,</span> criterion<span class="token operator">=</span><span class="token string">'inconsistent'</span><span class="token punctuation">,</span> depth<span class="token operator">=</span><span class="token number">2</span><span class="token punctuation">,</span> R<span class="token operator">=</span><span class="token boolean">None</span><span class="token punctuation">,</span> monocrit<span class="token operator">=</span><span class="token boolean">None</span><span class="token punctuation">)</span>
 <span class="token comment">### Z ： ndarray ，linkage用函数返回的矩阵编码的层次聚类</span>
@@ -1046,7 +1096,7 @@ plt<span class="token punctuation">.</span>rcParams<span class="token punctuatio
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2022-05-01 11:13:35" itemprop="dateModified" datetime="2022-05-01T11:13:35+08:00">2022-05-01</time>
+      <time title="修改时间：2022-05-07 12:48:43" itemprop="dateModified" datetime="2022-05-07T12:48:43+08:00">2022-05-07</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1068,7 +1118,42 @@ plt<span class="token punctuation">.</span>rcParams<span class="token punctuatio
     
     
     <div class="post-body" itemprop="articleBody">
-          <h3><span id="一-数据集简介">一、数据集简介</span></h3><blockquote>
+          <h3><span id="分类">分类</span></h3><table>
+<thead>
+<tr>
+<th></th>
+<th>目的</th>
+<th>条件</th>
+<th align="left"></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>线性判别分析（LDA）</td>
+<td>找到原始变量的线性组合</td>
+<td>所有组协方差矩阵都相等</td>
+<td align="left">要求数据必须是连续变量且服从正态分布</td>
+</tr>
+<tr>
+<td>二次判别分析（QDA）</td>
+<td></td>
+<td></td>
+<td align="left">要求数据必须是连续变量且服从正态分布</td>
+</tr>
+<tr>
+<td>Fisher判别分析</td>
+<td>对原数据进行降维投影，寻求能将各个类分开的方向</td>
+<td></td>
+<td align="left">要求K个总体协方差矩阵满秩且相同</td>
+</tr>
+<tr>
+<td>Logistic回归</td>
+<td>分类（yes or no）</td>
+<td>适用于因变量为指数</td>
+<td align="left"></td>
+</tr>
+</tbody></table>
+<p>经检验表明，二次判别一般要优于线性判别，更优于Fisher判别</p>
+<h3><span id="一-数据集简介">一、数据集简介</span></h3><blockquote>
 <p>pendigits数据集里是已经处理过的图像特征，每组数据共有17个，其中前16个是处理过的数字的特征，第17个是数据标签（0～9），也即为对应的数字。</p>
 </blockquote>
 <p>(数据下载：<a target="_blank" rel="noopener" href="https://github.com/tangbingqing/multivariate-statistics-data">https://github.com/tangbingqing/multivariate-statistics-data</a>) </p>
@@ -1212,7 +1297,7 @@ score <span class="token operator">=</span> score<span class="token punctuation"
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2022-05-01 11:13:21" itemprop="dateModified" datetime="2022-05-01T11:13:21+08:00">2022-05-01</time>
+      <time title="修改时间：2022-05-08 16:05:50" itemprop="dateModified" datetime="2022-05-08T16:05:50+08:00">2022-05-08</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1234,7 +1319,9 @@ score <span class="token operator">=</span> score<span class="token punctuation"
     
     
     <div class="post-body" itemprop="articleBody">
-          <h3><span id="一-数据集简介">一、数据集简介</span></h3><blockquote>
+          <h3><span id="回归">回归</span></h3><p>交叉验证 ：评价回归结果的好坏</p>
+<p>过拟合 ：过拟合意味着模型没有普遍意义，除了用于建模的数据，不适用于其他数据</p>
+<h3><span id="一-数据集简介">一、数据集简介</span></h3><blockquote>
 <p>原始数据有 14 个变量的 506 个观察值，其中，medv(自住房屋房价中位数，单位:千美元)是原始的目标变量，其他变量包括:crim(城镇的人均犯罪率)、mn(占地面积超过 25000 平方英尺的住宅用地的比例)、indus(每个镇的非零售业务比例，单位:英亩)、chas(有关查尔斯河的虚拟变量，如果挨着河为1，否则为0)、mo(一氧化氮浓度，单位:Ppm)、m(平均每间住房的房间数量)、age(1940 年以前建成的自住单位的房龄比例)、dis(五个波土顿就业中心的加权距离)、rad(高速公路的可达性指数)、tax(每万美元全价物业值的财产税率)、ptratio(城镇学生与教师的比例)、b(=100078-0.63)2，其中的 B 是城镇黑人的比例)、Istat(低收入人口比例);更正过的数据集有以下附加变量:cmed(修正了的自住房价中位数，单位:千美元)、tow(镇名称)、trat(人口普查区)、lon(人口普查区的经度)、lat(人口普查区的纬度)。</p>
 </blockquote>
 <p>我们将用 <strong>comedy</strong>(修正了的自住房屋房价中位数)作为<strong>因变量</strong>， 而将 crim，zn，indus，nox，rm，age，dis，rad，tax，ptratio，b，lstat 这<strong>12</strong>个变量作为<strong>自变量</strong>。(数据下载：<a target="_blank" rel="noopener" href="https://github.com/tangbingqing/multivariate-statistics-data">https://github.com/tangbingqing/multivariate-statistics-data</a>) </p>
@@ -1254,13 +1341,14 @@ model <span class="token operator">=</span> LinearRegression<span class="token p
 R <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
 <span class="token keyword">for</span> i <span class="token keyword">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span><span class="token number">10</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
     X_train<span class="token punctuation">,</span>X_test<span class="token punctuation">,</span>y_train<span class="token punctuation">,</span>y_test <span class="token operator">=</span> train_test_split<span class="token punctuation">(</span>X<span class="token punctuation">,</span>y<span class="token punctuation">,</span>train_size<span class="token operator">=</span><span class="token number">0.7</span><span class="token punctuation">)</span>
+    <span class="token comment"># 若使用随机种子，random_state ，那么每次生成的数据都是xiang</span>
     model<span class="token punctuation">.</span>fit<span class="token punctuation">(</span>X_train<span class="token punctuation">,</span>y_train<span class="token punctuation">)</span>
     R<span class="token punctuation">.</span>append<span class="token punctuation">(</span>model<span class="token punctuation">.</span>score<span class="token punctuation">(</span>X_test<span class="token punctuation">,</span>y_test<span class="token punctuation">)</span><span class="token punctuation">)</span>
 
 x_label <span class="token operator">=</span> <span class="token builtin">range</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">11</span><span class="token punctuation">)</span>
 plt<span class="token punctuation">.</span>ylim<span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">1.2</span><span class="token punctuation">)</span>
 plt<span class="token punctuation">.</span>plot<span class="token punctuation">(</span>x_label<span class="token punctuation">,</span> R<span class="token punctuation">,</span> marker<span class="token operator">=</span><span class="token string">'o'</span><span class="token punctuation">)</span>
-plt<span class="token punctuation">.</span>show<span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+plt<span class="token punctuation">.</span>show<span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 
 
@@ -1297,10 +1385,10 @@ R<span class="token punctuation">.</span>sort<span class="token punctuation">(</
 model <span class="token operator">=</span> LinearRegression<span class="token punctuation">(</span><span class="token punctuation">)</span>
 <span class="token keyword">for</span> i <span class="token keyword">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token number">13</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
     label <span class="token operator">=</span> random<span class="token punctuation">.</span>sample<span class="token punctuation">(</span><span class="token builtin">range</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">12</span><span class="token punctuation">)</span><span class="token punctuation">,</span>i<span class="token punctuation">)</span>
-    kfolds <span class="token operator">=</span> KFold<span class="token punctuation">(</span>i<span class="token punctuation">,</span>shuffle<span class="token operator">=</span><span class="token boolean">False</span><span class="token punctuation">)</span>
+    <span class="token comment"># kfolds = KFold(i,shuffle=False)</span>
     xx <span class="token operator">=</span> X<span class="token punctuation">.</span>iloc<span class="token punctuation">[</span><span class="token punctuation">:</span><span class="token punctuation">,</span>label<span class="token punctuation">]</span>
-    score <span class="token operator">=</span> cross_val_score<span class="token punctuation">(</span>model<span class="token punctuation">,</span>xx<span class="token punctuation">,</span>y<span class="token punctuation">,</span>cv <span class="token operator">=</span>kfolds<span class="token punctuation">)</span>  
-    R<span class="token punctuation">.</span>append<span class="token punctuation">(</span>score<span class="token punctuation">.</span>mean<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+    score <span class="token operator">=</span> cross_val_score<span class="token punctuation">(</span>model<span class="token punctuation">,</span>xx<span class="token punctuation">,</span>y<span class="token punctuation">,</span>cv <span class="token operator">=</span><span class="token number">10</span><span class="token punctuation">)</span>  
+    <span class="token comment">#R.append(score.mean())</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 
 
@@ -1383,9 +1471,15 @@ R2 <span class="token operator">=</span> <span class="token punctuation">[</span
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">发表于</span>
-      
 
-      <time title="创建时间：2022-04-22 22:53:41 / 修改时间：22:53:55" itemprop="dateCreated datePublished" datetime="2022-04-22T22:53:41+08:00">2022-04-22</time>
+      <time title="创建时间：2022-04-22 22:53:41" itemprop="dateCreated datePublished" datetime="2022-04-22T22:53:41+08:00">2022-04-22</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2022-05-08 11:01:05" itemprop="dateModified" datetime="2022-05-08T11:01:05+08:00">2022-05-08</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1409,7 +1503,7 @@ R2 <span class="token operator">=</span> <span class="token punctuation">[</span
     <div class="post-body" itemprop="articleBody">
           <p>数据下载：<a target="_blank" rel="noopener" href="https://github.com/tangbingqing/multivariate-statistics-data">https://github.com/tangbingqing/multivariate-statistics-data</a></p>
 <p>轮廓图和调和曲线图有着相近的功能，轮廓图简单却现得粗糙，调和曲线图公式复杂却十分精细。</p>
-<p>均可用于聚类分析：同类曲线聚在一起，不同类不同束</p>
+<p><strong>均可用于聚类分析：同类曲线聚在一起，不同类不同束</strong></p>
 <h2><span id="一-轮廓图">一、轮廓图</span></h2><p>在二维直角坐标系中，将n次观测值可画出n条折线构成轮廓图，其中横坐标表示各个变量<strong>，</strong>纵坐标表示<strong>与变量取值成正比的数值</strong></p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python">data <span class="token operator">=</span> pd<span class="token punctuation">.</span>read_csv<span class="token punctuation">(</span><span class="token string">r"iris.data"</span><span class="token punctuation">)</span>   <span class="token comment"># 尾鸢花数据</span>
 plt<span class="token punctuation">.</span>figure<span class="token punctuation">(</span><span class="token punctuation">)</span>

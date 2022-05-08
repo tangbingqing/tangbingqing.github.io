@@ -20,16 +20,16 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"tangbingqing.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.10.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="一、数据集简介 原始数据有 14 个变量的 506 个观察值，其中，medv(自住房屋房价中位数，单位:千美元)是原始的目标变量，其他变量包括:crim(城镇的人均犯罪率)、mn(占地面积超过 25000 平方英尺的住宅用地的比例)、indus(每个镇的非零售业务比例，单位:英亩)、chas(有关查尔斯河的虚拟变量，如果挨着河为1，否则为0)、mo(一氧化氮浓度，单位:Ppm)、m(平均每间住房的">
+    <meta name="description" content="回归交叉验证 ：评价回归结果的好坏 过拟合 ：过拟合意味着模型没有普遍意义，除了用于建模的数据，不适用于其他数据 一、数据集简介 原始数据有 14 个变量的 506 个观察值，其中，medv(自住房屋房价中位数，单位:千美元)是原始的目标变量，其他变量包括:crim(城镇的人均犯罪率)、mn(占地面积超过 25000 平方英尺的住宅用地的比例)、indus(每个镇的非零售业务比例，单位:英亩)、c">
 <meta property="og:type" content="article">
 <meta property="og:title" content="多元统计 - 回归">
 <meta property="og:url" content="https://tangbingqing.github.io/2022/04/24/duo-yuan-hui-gui/index.html">
 <meta property="og:site_name" content="T.ng">
-<meta property="og:description" content="一、数据集简介 原始数据有 14 个变量的 506 个观察值，其中，medv(自住房屋房价中位数，单位:千美元)是原始的目标变量，其他变量包括:crim(城镇的人均犯罪率)、mn(占地面积超过 25000 平方英尺的住宅用地的比例)、indus(每个镇的非零售业务比例，单位:英亩)、chas(有关查尔斯河的虚拟变量，如果挨着河为1，否则为0)、mo(一氧化氮浓度，单位:Ppm)、m(平均每间住房的">
+<meta property="og:description" content="回归交叉验证 ：评价回归结果的好坏 过拟合 ：过拟合意味着模型没有普遍意义，除了用于建模的数据，不适用于其他数据 一、数据集简介 原始数据有 14 个变量的 506 个观察值，其中，medv(自住房屋房价中位数，单位:千美元)是原始的目标变量，其他变量包括:crim(城镇的人均犯罪率)、mn(占地面积超过 25000 平方英尺的住宅用地的比例)、indus(每个镇的非零售业务比例，单位:英亩)、c">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://tangbingqing.github.io/2022/04/24/duo-yuan-hui-gui/image-20220424161429912.png">
 <meta property="article:published_time" content="2022-04-24T08:03:41.000Z">
-<meta property="article:modified_time" content="2022-05-01T03:13:21.835Z">
+<meta property="article:modified_time" content="2022-05-08T08:05:50.988Z">
 <meta property="article:author" content="T.ng">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://tangbingqing.github.io/2022/04/24/duo-yuan-hui-gui/image-20220424161429912.png">
@@ -119,7 +119,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link"><span class="nav-number">1.</span> <span class="nav-text">一、数据集简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link"><span class="nav-number">2.</span> <span class="nav-text">二、实验</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link"><span class="nav-number">2.1.</span> <span class="nav-text">区别:</span></a></li></ol></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link"><span class="nav-number">1.</span> <span class="nav-text">回归</span></a></li><li class="nav-item nav-level-3"><a class="nav-link"><span class="nav-number">2.</span> <span class="nav-text">一、数据集简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link"><span class="nav-number">3.</span> <span class="nav-text">二、实验</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link"><span class="nav-number">3.1.</span> <span class="nav-text">区别:</span></a></li></ol></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -220,7 +220,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2022-05-01 11:13:21" itemprop="dateModified" datetime="2022-05-01T11:13:21+08:00">2022-05-01</time>
+      <time title="修改时间：2022-05-08 16:05:50" itemprop="dateModified" datetime="2022-05-08T16:05:50+08:00">2022-05-08</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -249,7 +249,9 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <h3><span id="一-数据集简介">一、数据集简介</span></h3><blockquote>
+        <h3><span id="回归">回归</span></h3><p>交叉验证 ：评价回归结果的好坏</p>
+<p>过拟合 ：过拟合意味着模型没有普遍意义，除了用于建模的数据，不适用于其他数据</p>
+<h3><span id="一-数据集简介">一、数据集简介</span></h3><blockquote>
 <p>原始数据有 14 个变量的 506 个观察值，其中，medv(自住房屋房价中位数，单位:千美元)是原始的目标变量，其他变量包括:crim(城镇的人均犯罪率)、mn(占地面积超过 25000 平方英尺的住宅用地的比例)、indus(每个镇的非零售业务比例，单位:英亩)、chas(有关查尔斯河的虚拟变量，如果挨着河为1，否则为0)、mo(一氧化氮浓度，单位:Ppm)、m(平均每间住房的房间数量)、age(1940 年以前建成的自住单位的房龄比例)、dis(五个波土顿就业中心的加权距离)、rad(高速公路的可达性指数)、tax(每万美元全价物业值的财产税率)、ptratio(城镇学生与教师的比例)、b(=100078-0.63)2，其中的 B 是城镇黑人的比例)、Istat(低收入人口比例);更正过的数据集有以下附加变量:cmed(修正了的自住房价中位数，单位:千美元)、tow(镇名称)、trat(人口普查区)、lon(人口普查区的经度)、lat(人口普查区的纬度)。</p>
 </blockquote>
 <p>我们将用 <strong>comedy</strong>(修正了的自住房屋房价中位数)作为<strong>因变量</strong>， 而将 crim，zn，indus，nox，rm，age，dis，rad，tax，ptratio，b，lstat 这<strong>12</strong>个变量作为<strong>自变量</strong>。(数据下载：<a target="_blank" rel="noopener" href="https://github.com/tangbingqing/multivariate-statistics-data">https://github.com/tangbingqing/multivariate-statistics-data</a>) </p>
@@ -269,13 +271,14 @@ model <span class="token operator">=</span> LinearRegression<span class="token p
 R <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
 <span class="token keyword">for</span> i <span class="token keyword">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span><span class="token number">10</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
     X_train<span class="token punctuation">,</span>X_test<span class="token punctuation">,</span>y_train<span class="token punctuation">,</span>y_test <span class="token operator">=</span> train_test_split<span class="token punctuation">(</span>X<span class="token punctuation">,</span>y<span class="token punctuation">,</span>train_size<span class="token operator">=</span><span class="token number">0.7</span><span class="token punctuation">)</span>
+    <span class="token comment"># 若使用随机种子，random_state ，那么每次生成的数据都是xiang</span>
     model<span class="token punctuation">.</span>fit<span class="token punctuation">(</span>X_train<span class="token punctuation">,</span>y_train<span class="token punctuation">)</span>
     R<span class="token punctuation">.</span>append<span class="token punctuation">(</span>model<span class="token punctuation">.</span>score<span class="token punctuation">(</span>X_test<span class="token punctuation">,</span>y_test<span class="token punctuation">)</span><span class="token punctuation">)</span>
 
 x_label <span class="token operator">=</span> <span class="token builtin">range</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">11</span><span class="token punctuation">)</span>
 plt<span class="token punctuation">.</span>ylim<span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">1.2</span><span class="token punctuation">)</span>
 plt<span class="token punctuation">.</span>plot<span class="token punctuation">(</span>x_label<span class="token punctuation">,</span> R<span class="token punctuation">,</span> marker<span class="token operator">=</span><span class="token string">'o'</span><span class="token punctuation">)</span>
-plt<span class="token punctuation">.</span>show<span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+plt<span class="token punctuation">.</span>show<span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 
 
@@ -312,10 +315,10 @@ R<span class="token punctuation">.</span>sort<span class="token punctuation">(</
 model <span class="token operator">=</span> LinearRegression<span class="token punctuation">(</span><span class="token punctuation">)</span>
 <span class="token keyword">for</span> i <span class="token keyword">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token number">13</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
     label <span class="token operator">=</span> random<span class="token punctuation">.</span>sample<span class="token punctuation">(</span><span class="token builtin">range</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">12</span><span class="token punctuation">)</span><span class="token punctuation">,</span>i<span class="token punctuation">)</span>
-    kfolds <span class="token operator">=</span> KFold<span class="token punctuation">(</span>i<span class="token punctuation">,</span>shuffle<span class="token operator">=</span><span class="token boolean">False</span><span class="token punctuation">)</span>
+    <span class="token comment"># kfolds = KFold(i,shuffle=False)</span>
     xx <span class="token operator">=</span> X<span class="token punctuation">.</span>iloc<span class="token punctuation">[</span><span class="token punctuation">:</span><span class="token punctuation">,</span>label<span class="token punctuation">]</span>
-    score <span class="token operator">=</span> cross_val_score<span class="token punctuation">(</span>model<span class="token punctuation">,</span>xx<span class="token punctuation">,</span>y<span class="token punctuation">,</span>cv <span class="token operator">=</span>kfolds<span class="token punctuation">)</span>  
-    R<span class="token punctuation">.</span>append<span class="token punctuation">(</span>score<span class="token punctuation">.</span>mean<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+    score <span class="token operator">=</span> cross_val_score<span class="token punctuation">(</span>model<span class="token punctuation">,</span>xx<span class="token punctuation">,</span>y<span class="token punctuation">,</span>cv <span class="token operator">=</span><span class="token number">10</span><span class="token punctuation">)</span>  
+    <span class="token comment">#R.append(score.mean())</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 
 
